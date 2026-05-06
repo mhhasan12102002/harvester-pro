@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harvester Pro</title>
+
+<style>
+body{
+  margin:0;
+  font-family:system-ui;
+  background:#0b1220;
+  color:white;
+}
+
+.nav{
+  padding:15px;
+  background:#111a2e;
+  font-weight:bold;
+  font-size:18px;
+}
+
+.container{
+  padding:15px;
+}
+
+.card{
+  background:#18233a;
+  padding:15px;
+  margin:10px 0;
+  border-radius:15px;
+  box-shadow:0 10px 20px rgba(0,0,0,0.3);
+}
+
+input{
+  width:100%;
+  padding:10px;
+  margin:5px 0;
+  border-radius:8px;
+  border:none;
+}
+
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:#00c896;
+  color:white;
+  font-weight:bold;
+}
+
+.item{
+  background:#101827;
+  padding:10px;
+  margin-top:10px;
+  border-radius:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="nav">🚜 Harvester Pro Dashboard</div>
+
+<div class="container">
+
+<!-- INPUT -->
+<div class="card">
+  <h3>➕ Customer Add</h3>
+
+  <input id="name" placeholder="নাম">
+  <input id="amount" placeholder="পরিমাণ">
+  <input id="rate" placeholder="রেট">
+  <input id="paid" placeholder="নগদ পেয়েছে">
+
+  <button onclick="save()">Save</button>
+</div>
+
+<!-- SUMMARY -->
+<div class="card">
+  <h3>📊 Summary</h3>
+  <p>Income: <span id="income">0</span> ৳</p>
+  <p>Due: <span id="due">0</span> ৳</p>
+</div>
+
+<!-- LIST -->
+<div id="list"></div>
+
+</div>
+
+<script type="module">
+
+// Firebase import
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+// 🔥 তোমার Firebase config (এটা আগের মতোই রাখো)
+const firebaseConfig = {
+  apiKey: "AIzaSyAzlYbdNJMey9lGM1LBA6e3-HgSkFWV2TA",
+  authDomain: "harvester-app-64764.firebaseapp.com",
+  databaseURL: "https://harvester-app-64764-default-rtdb.firebaseio.com",
+  projectId: "harvester-app-64764",
+  appId: "1:73768061791:web:4d0448c26c7890774344ea"
+};
+
+// init
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// SAVE DATA
+window.save = function(){
+
+  let name = document.getElementById("name").value;
+  let amount = Number(document.getElementById("amount").value);
+  let rate = Number(document.getElementById("rate").value);
+  let paid = Number(document.getElementById("paid").value || 0);
+
+  let total = amount * rate;
+
+  push(ref(db,"customers"),{
+    name,
+    amount,
+    rate,
+    paid,
+    total,
+    due: total - paid,
+    date: new Date().toLocaleDateString()
+  });
+
+  alert("Saved!");
+}
+
+// LOAD DATA
+onValue(ref(db,"customers"),(snap)=>{
+
+  let data = snap.val();
+  let html = "";
+  let income = 0;
+  let due = 0;
+
+  for(let key in data){
+    income += data[key].total;
+    due += data[key].due;
+
+    html += `
+      <div class="item">
+        <b>${data[key].name}</b><br>
+        Total: ${data[key].total} ৳<br>
+        Due: ${data[key].due} ৳
+      </div>
+    `;
+  }
+
+  document.getElementById("list").innerHTML = html;
+  document.getElementById("income").innerText = income;
+  document.getElementById("due").innerText = due;
+
+});
+
+</script>
+
+</body>
+</html>
