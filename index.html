@@ -5,453 +5,312 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>HARVESTER PRO — রফিক এন্টারপ্রাইজ</title>
     
-    <!-- Fonts & Libraries -->
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts & Scripts -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
     <style>
-        :root {
-            --glass: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --neon-blue: #00f2ff;
-            --neon-purple: #7000ff;
-        }
         body {
             font-family: 'Hind Siliguri', sans-serif;
-            background: #050505;
-            color: #e0e0e0;
+            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
+            color: #f8fafc;
+            min-height: 100vh;
             overflow-x: hidden;
-            touch-action: manipulation;
+            -webkit-font-smoothing: antialiased;
         }
-        .glass-card {
-            background: var(--glass);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--glass-border);
-            border-radius: 24px;
+
+        /* Apple Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
-        .neon-glow {
-            box-shadow: 0 0 15px rgba(0, 242, 255, 0.2);
+
+        .tab-active {
+            background: rgba(255, 255, 255, 0.1) !important;
+            color: #38bdf8 !important;
+            border-top: 2px solid #38bdf8;
         }
-        .nav-active {
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
-        }
-        input, select {
+
+        /* Mobile Layout */
+        .safe-area { padding-bottom: calc(constant(safe-area-inset-bottom) + 80px); padding-bottom: calc(env(safe-area-inset-bottom) + 80px); }
+        
+        .tab-content { display: none; }
+        .active { display: block; }
+
+        input {
             background: rgba(255, 255, 255, 0.05) !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 14px !important;
+            padding: 12px 16px !important;
             color: white !important;
-            border-radius: 12px !important;
+            outline: none !important;
         }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
+
+        input:focus { border-color: #38bdf8 !important; box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #0ea5e9, #2563eb);
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        }
     </style>
 </head>
-<body class="safe-top pb-24">
+<body class="safe-area">
 
-    <!-- Top Bar -->
-    <header class="p-6 flex justify-between items-center sticky top-0 z-50 bg-[#050505]/80 backdrop-blur-md">
+    <!-- Header -->
+    <header class="p-5 flex justify-between items-center sticky top-0 z-50 glass rounded-b-3xl border-none">
         <div>
-            <h1 class="text-xs font-bold tracking-[0.2em] text-gray-500 uppercase">System Active</h1>
-            <p class="text-xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">রফিক এন্টারপ্রাইজ</p>
+            <p class="text-xs text-blue-400 font-bold tracking-widest uppercase">System Active</p>
+            <h1 class="text-xl font-bold">রফিক এন্টারপ্রাইজ</h1>
         </div>
-        <div class="flex gap-3">
-            <button onclick="syncData()" class="p-2 glass-card"><svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg></button>
+        <div class="h-10 w-10 glass rounded-full flex items-center justify-center border-blue-500/30">
+            <span class="text-blue-400 text-lg">🌾</span>
         </div>
     </header>
 
-    <!-- Tab 1: HOME DASHBOARD -->
-    <main id="home" class="tab-content active p-4 space-y-6">
-        <!-- Live Stats Grid -->
-        <div class="grid grid-cols-2 gap-4">
-            <div class="glass-card p-4 col-span-2 relative overflow-hidden border-l-4 border-cyan-400">
-                <p class="text-gray-400 text-sm">মোট বিক্রি (Total Sales)</p>
-                <h2 class="text-3xl font-bold mt-1 text-white">৳ <span id="stat-total-sales">0</span></h2>
-                <div class="absolute -right-4 -bottom-4 opacity-10"><svg class="w-24 h-24" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 14h-2v-2h2v2zm0-4h-2V7h2v5z"></path></svg></div>
+    <!-- Content Sections -->
+    <div id="main-content" class="p-4 space-y-6">
+        
+        <!-- Tab 1: Home Dashboard -->
+        <section id="home" class="tab-content active space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+                <div class="glass p-5 rounded-[24px] col-span-2">
+                    <p class="text-gray-400 text-sm">মোট বিক্রি (আজ)</p>
+                    <h2 class="text-4xl font-bold mt-2">৳ <span id="stat-total">0</span></h2>
+                </div>
+                <div class="glass p-4 rounded-[22px]">
+                    <p class="text-gray-400 text-xs">মোট নগদ</p>
+                    <h3 class="text-lg font-bold text-green-400">৳ <span id="stat-cash">0</span></h3>
+                </div>
+                <div class="glass p-4 rounded-[22px]">
+                    <p class="text-gray-400 text-xs">মোট বাকি</p>
+                    <h3 class="text-lg font-bold text-red-400">৳ <span id="stat-due">0</span></h3>
+                </div>
+                <div class="glass p-4 rounded-[22px] col-span-2">
+                    <p class="text-gray-400 text-xs">মোট গন্ডা কাটা হয়েছে</p>
+                    <h3 class="text-lg font-bold text-blue-400"><span id="stat-gonda">0</span> গন্ডা</h3>
+                </div>
             </div>
-            <div class="glass-card p-4 border-l-4 border-green-500">
-                <p class="text-gray-400 text-xs">আজকের নগদ</p>
-                <h3 class="text-lg font-bold text-green-400">৳ <span id="stat-cash">0</span></h3>
-            </div>
-            <div class="glass-card p-4 border-l-4 border-red-500">
-                <p class="text-gray-400 text-xs">মোট বাকি</p>
-                <h3 class="text-lg font-bold text-red-400">৳ <span id="stat-due">0</span></h3>
-            </div>
-            <div class="glass-card p-4 border-l-4 border-yellow-500">
-                <p class="text-gray-400 text-xs">আজকের গন্ডা</p>
-                <h3 class="text-lg font-bold text-yellow-400"><span id="stat-gonda">0</span></h3>
-            </div>
-            <div class="glass-card p-4 border-l-4 border-purple-500">
-                <p class="text-gray-400 text-xs">মোট টাকা</p>
-                <h3 class="text-lg font-bold text-purple-400">৳ <span id="stat-total-money">0</span></h3>
-            </div>
-        </div>
+        </section>
 
-        <!-- Analytics Chart -->
-        <div class="glass-card p-4">
-            <canvas id="salesChart" height="200"></canvas>
-        </div>
-    </main>
+        <!-- Tab 2: Customers Entry -->
+        <section id="customers" class="tab-content space-y-5">
+            <div class="glass p-6 rounded-[28px] border-white/5">
+                <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
+                    <span class="w-1.5 h-5 bg-blue-500 rounded-full"></span> নতুন এন্ট্রি
+                </h2>
+                <div class="space-y-4">
+                    <input type="text" id="cust-name" placeholder="কাস্টমারের নাম" class="w-full">
+                    <div class="grid grid-cols-2 gap-3">
+                        <input type="number" id="cust-gonda" oninput="calculateLive()" placeholder="গন্ডা">
+                        <input type="number" id="cust-rate" oninput="calculateLive()" placeholder="রেট">
+                    </div>
+                    <input type="number" id="cust-cash" oninput="calculateLive()" placeholder="নগদ জমা (না থাকলে ০)">
+                    
+                    <div class="p-4 rounded-2xl bg-white/5 border border-dashed border-white/10">
+                        <div class="flex justify-between text-sm"><span class="text-gray-400">মোট টাকা:</span> <span id="view-total">৳ ০</span></div>
+                        <div class="flex justify-between text-sm font-bold"><span class="text-gray-400">বাকি:</span> <span id="view-due" class="text-red-400">৳ ০</span></div>
+                    </div>
 
-    <!-- Tab 2: CUSTOMER ENTRY -->
-    <main id="customers" class="tab-content p-4 space-y-6">
-        <section class="glass-card p-6 shadow-2xl">
-            <h2 class="text-xl font-bold mb-6 flex items-center gap-2">
-                <span class="w-2 h-6 bg-cyan-400 rounded-full"></span> কাস্টমার এন্ট্রি
-            </h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="text-xs text-gray-500 mb-1 block">কাস্টমারের নাম</label>
-                    <input type="text" id="in-name" class="w-full p-4 outline-none focus:border-cyan-400 transition-all" placeholder="নাম লিখুন">
+                    <button onclick="saveData()" class="w-full btn-primary py-4 rounded-2xl font-bold text-white transition-all active:scale-95">
+                        সেভ করুন
+                    </button>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    <div>
-                        <label class="text-xs text-gray-500 mb-1 block">গন্ডা</label>
-                        <input type="number" id="in-gonda" oninput="liveCalc()" class="w-full p-4 outline-none" placeholder="0.00">
-                    </div>
-                    <div>
-                        <label class="text-xs text-gray-500 mb-1 block">রেট</label>
-                        <input type="number" id="in-rate" oninput="liveCalc()" class="w-full p-4 outline-none" placeholder="৳">
-                    </div>
+            </div>
+
+            <!-- List Filter -->
+            <div class="flex justify-between items-center px-1">
+                <h3 class="font-bold">কাস্টমার তালিকা</h3>
+                <button onclick="toggleDueFilter()" id="filter-btn" class="text-xs glass px-4 py-2 rounded-full border-blue-500/20 text-blue-400">সব কাস্টমার</button>
+            </div>
+
+            <div id="customer-list" class="space-y-3">
+                <!-- Data will appear here -->
+            </div>
+        </section>
+
+        <!-- Tab 3: Reports -->
+        <section id="reports" class="tab-content">
+            <div class="glass p-8 rounded-[30px] text-center space-y-6">
+                <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto">
+                    <span class="text-2xl">📊</span>
                 </div>
-                <div>
-                    <label class="text-xs text-gray-500 mb-1 block">নগদ সংগ্রহ (ঐচ্ছিক)</label>
-                    <input type="number" id="in-cash" oninput="liveCalc()" class="w-full p-4 outline-none" placeholder="৳">
-                </div>
-                <div class="p-4 rounded-2xl bg-cyan-400/5 border border-cyan-400/20">
-                    <div class="flex justify-between mb-2">
-                        <span class="text-gray-400">মোট টাকা:</span>
-                        <span class="font-bold text-white text-xl">৳ <span id="preview-total">0</span></span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span class="text-gray-400">বাকি:</span>
-                        <span class="font-bold text-red-400">৳ <span id="preview-due">0</span></span>
-                    </div>
-                </div>
-                <button onclick="saveRecord()" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 p-4 rounded-xl font-bold text-white shadow-lg active:scale-95 transition-transform">
-                    ডাটাবেজে সেভ করুন
+                <h2 class="text-xl font-bold">রিপোর্ট ডাউনলোড</h2>
+                <p class="text-sm text-gray-400">আপনার সকল তথ্য ব্যাকআপ রাখার জন্য ফাইল ডাউনলোড করুন।</p>
+                <button onclick="exportJSON()" class="w-full glass py-4 rounded-2xl font-bold border-white/10 hover:bg-white/5 transition-all">
+                    JSON ব্যাকআপ ফাইল
                 </button>
             </div>
         </section>
 
-        <!-- Customer List & Filter -->
-        <div class="flex justify-between items-center pt-4">
-            <h3 class="text-lg font-bold">কাস্টমার লিস্ট</h3>
-            <button onclick="toggleDueOnly()" id="dueFilterBtn" class="px-4 py-2 rounded-full border border-gray-700 text-xs transition-all">
-                বাকি কাস্টমার (OFF)
-            </button>
-        </div>
-        <div id="customer-list" class="space-y-4">
-            <!-- Records Loaded Dynamically -->
-        </div>
-    </main>
-
-    <!-- Tab 3: REPORTS -->
-    <main id="reports" class="tab-content p-4 space-y-6">
-        <div class="glass-card p-6 text-center space-y-6">
-            <div class="w-20 h-20 bg-cyan-400/10 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg class="w-10 h-10 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            </div>
-            <h2 class="text-2xl font-bold">রিপোর্ট জেনারেটর</h2>
-            <p class="text-gray-400 text-sm">প্রফেশনাল ফিন্যান্সিয়াল স্টেটমেন্ট এবং এক্সেল ফাইল ডাউনলোড করুন।</p>
-            
-            <div class="grid grid-cols-1 gap-4">
-                <button onclick="exportToExcel()" class="flex items-center justify-between p-4 glass-card hover:bg-green-500/10 transition-all">
-                    <span class="flex items-center gap-3"><span class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center text-green-500 font-bold">XL</span> Excel Sheets</span>
-                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg>
-                </button>
-                <button onclick="generatePDF()" class="flex items-center justify-between p-4 glass-card hover:bg-red-500/10 transition-all">
-                    <span class="flex items-center gap-3"><span class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center text-red-500 font-bold">PDF</span> Financial Statement</span>
-                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg>
-                </button>
-                <button onclick="exportToJPG()" class="flex items-center justify-between p-4 glass-card hover:bg-blue-500/10 transition-all">
-                    <span class="flex items-center gap-3"><span class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center text-blue-500 font-bold">IMG</span> Digital Receipt</span>
-                    <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"></path></svg>
-                </button>
-            </div>
-        </div>
-    </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 p-4 bg-[#050505]/90 backdrop-blur-xl border-t border-gray-800 z-[100]">
-        <div class="flex justify-around items-center max-w-md mx-auto">
-            <button onclick="showTab('home')" id="nav-home" class="flex flex-col items-center gap-1 nav-active transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-                <span class="text-[10px] font-bold">হোম</span>
-            </button>
-            <button onclick="showTab('customers')" id="nav-customers" class="flex flex-col items-center gap-1 text-gray-500 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-                <span class="text-[10px] font-bold">কাস্টমার</span>
-            </button>
-            <button onclick="showTab('reports')" id="nav-reports" class="flex flex-col items-center gap-1 text-gray-500 transition-all">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                <span class="text-[10px] font-bold">রিপোর্ট</span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- Hidden PDF Template -->
-    <div id="pdf-template" class="hidden p-8 bg-white text-black">
-        <h1 class="text-2xl font-bold text-center border-b-2 pb-4">HARVESTER PRO — রফিক এন্টারপ্রাইজ</h1>
-        <div id="pdf-summary" class="grid grid-cols-2 gap-4 my-6"></div>
-        <table class="w-full border-collapse border border-gray-300">
-            <thead>
-                <tr class="bg-gray-100 italic">
-                    <th class="border p-2">নাম</th>
-                    <th class="border p-2">গন্ডা</th>
-                    <th class="border p-2">মোট</th>
-                    <th class="border p-2">বাকি</th>
-                </tr>
-            </thead>
-            <tbody id="pdf-table-body"></tbody>
-        </table>
-        <div class="mt-20 flex justify-between">
-            <div class="border-t border-black px-8 pt-2">অপারেটর স্বাক্ষর</div>
-            <div class="border-t border-black px-8 pt-2">স্বত্বাধিকারী স্বাক্ষর</div>
-        </div>
     </div>
 
-    <script>
-        // --- CORE DATABASE (IndexedDB) ---
-        const dbName = "HarvesterProDB";
-        let db;
-        let dueOnlyMode = false;
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-0 left-0 right-0 glass h-20 rounded-t-3xl border-none flex justify-around items-center px-6 z-50">
+        <button onclick="switchTab('home')" id="tab-home" class="flex flex-col items-center gap-1 text-gray-500 transition-all p-2 rounded-xl">
+            <span>🏠</span>
+            <span class="text-[10px] font-bold">হোম</span>
+        </button>
+        <button onclick="switchTab('customers')" id="tab-customers" class="flex flex-col items-center gap-1 text-gray-500 transition-all p-2 rounded-xl">
+            <span>👥</span>
+            <span class="text-[10px] font-bold">কাস্টমার</span>
+        </button>
+        <button onclick="switchTab('reports')" id="tab-reports" class="flex flex-col items-center gap-1 text-gray-500 transition-all p-2 rounded-xl">
+            <span>📄</span>
+            <span class="text-[10px] font-bold">রিপোর্ট</span>
+        </button>
+    </nav>
 
-        const request = indexedDB.open(dbName, 1);
+    <script>
+        let db;
+        let showOnlyDue = false;
+
+        // --- Database Initialize ---
+        const request = indexedDB.open("HarvesterDB", 2);
         request.onupgradeneeded = (e) => {
             db = e.target.result;
-            db.createObjectStore("records", { keyPath: "id", autoIncrement: true });
+            if (!db.objectStoreNames.contains("entries")) {
+                db.createObjectStore("entries", { keyPath: "id", autoIncrement: true });
+            }
         };
         request.onsuccess = (e) => {
             db = e.target.result;
-            loadDashboard();
-            loadCustomers();
+            refreshUI();
         };
 
-        // --- NAVIGATION ---
-        function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
+        // --- Tabs ---
+        function switchTab(id) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(el => el.classList.remove('tab-active'));
             
-            document.querySelectorAll('nav button').forEach(b => b.classList.remove('nav-active', 'text-gray-500'));
-            document.getElementById(`nav-${tabId}`).classList.add('nav-active');
-            document.querySelectorAll('nav button:not(.nav-active)').forEach(b => b.classList.add('text-gray-500'));
-
-            gsap.from(`#${tabId}`, { opacity: 0, y: 20, duration: 0.4 });
-            if(tabId === 'home') updateChart();
+            document.getElementById(id).classList.add('active');
+            document.getElementById('tab-' + id).classList.add('tab-active');
+            
+            gsap.from("#"+id, { opacity: 0, y: 15, duration: 0.4 });
+            refreshUI();
         }
 
-        // --- CALCULATION LOGIC ---
-        function liveCalc() {
-            const gonda = parseFloat(document.getElementById('in-gonda').value) || 0;
-            const rate = parseFloat(document.getElementById('in-rate').value) || 0;
-            const cash = parseFloat(document.getElementById('in-cash').value) || 0;
-            
+        // --- Logic ---
+        function calculateLive() {
+            const gonda = parseFloat(document.getElementById('cust-gonda').value) || 0;
+            const rate = parseFloat(document.getElementById('cust-rate').value) || 0;
+            const cash = parseFloat(document.getElementById('cust-cash').value) || 0;
             const total = gonda * rate;
             const due = total - cash;
 
-            document.getElementById('preview-total').innerText = total.toLocaleString('bn-BD');
-            document.getElementById('preview-due').innerText = due.toLocaleString('bn-BD');
+            document.getElementById('view-total').innerText = '৳ ' + total.toLocaleString('bn-BD');
+            document.getElementById('view-due').innerText = '৳ ' + due.toLocaleString('bn-BD');
         }
 
-        // --- SAVE DATA ---
-        function saveRecord() {
-            const name = document.getElementById('in-name').value;
-            const gonda = parseFloat(document.getElementById('in-gonda').value) || 0;
-            const rate = parseFloat(document.getElementById('in-rate').value) || 0;
-            const cash = parseFloat(document.getElementById('in-cash').value) || 0;
+        function saveData() {
+            const name = document.getElementById('cust-name').value;
+            const gonda = parseFloat(document.getElementById('cust-gonda').value) || 0;
+            const rate = parseFloat(document.getElementById('cust-rate').value) || 0;
+            const cash = parseFloat(document.getElementById('cust-cash').value) || 0;
 
             if(!name || gonda <= 0 || rate <= 0) {
-                alert("দয়া করে নাম, গন্ডা এবং রেট সঠিকভাবে পূরণ করুন।");
+                alert("দয়া করে সব তথ্য সঠিক দিন");
                 return;
             }
 
             const total = gonda * rate;
             const due = total - cash;
-            const entry = {
-                name, gonda, rate, cash, total, due,
-                date: new Date().toISOString().split('T')[0],
-                timestamp: Date.now()
-            };
+            const entry = { name, gonda, rate, cash, total, due, date: new Date().toLocaleDateString('bn-BD') };
 
-            const tx = db.transaction("records", "readwrite");
-            tx.objectStore("records").add(entry);
+            const tx = db.transaction("entries", "readwrite");
+            const store = tx.objectStore("entries");
+            store.add(entry);
+
             tx.oncomplete = () => {
-                alert("সফলভাবে সেভ হয়েছে!");
                 resetForm();
-                loadDashboard();
-                loadCustomers();
+                refreshUI();
+                alert("সংরক্ষণ করা হয়েছে!");
             };
         }
 
         function resetForm() {
-            document.querySelectorAll('input').forEach(i => i.value = '');
-            liveCalc();
+            document.getElementById('cust-name').value = '';
+            document.getElementById('cust-gonda').value = '';
+            document.getElementById('cust-rate').value = '';
+            document.getElementById('cust-cash').value = '';
+            calculateLive();
         }
 
-        // --- DASHBOARD DATA ---
-        function loadDashboard() {
-            const tx = db.transaction("records", "readonly");
-            const store = tx.objectStore("records");
+        function refreshUI() {
+            if (!db) return;
+            const tx = db.transaction("entries", "readonly");
+            const store = tx.objectStore("entries");
             const req = store.getAll();
 
             req.onsuccess = () => {
                 const data = req.result;
-                let totalSales = 0, totalCash = 0, totalDue = 0, totalGonda = 0;
-
-                data.forEach(r => {
-                    totalSales += r.total;
-                    totalCash += r.cash;
-                    totalDue += r.due;
-                    totalGonda += r.gonda;
-                });
-
-                animateCounter("stat-total-sales", totalSales);
-                animateCounter("stat-cash", totalCash);
-                animateCounter("stat-due", totalDue);
-                animateCounter("stat-gonda", totalGonda);
-                animateCounter("stat-total-money", totalSales);
-                updateChart(data);
+                updateStats(data);
+                renderList(data);
             };
         }
 
-        function animateCounter(id, val) {
-            const obj = { n: 0 };
-            gsap.to(obj, {
-                n: val,
-                duration: 1,
-                onUpdate: () => document.getElementById(id).innerText = Math.floor(obj.n).toLocaleString('bn-BD')
+        function updateStats(data) {
+            let total = 0, cash = 0, due = 0, gonda = 0;
+            data.forEach(item => {
+                total += item.total;
+                cash += item.cash;
+                due += item.due;
+                gonda += item.gonda;
+            });
+            document.getElementById('stat-total').innerText = total.toLocaleString('bn-BD');
+            document.getElementById('stat-cash').innerText = cash.toLocaleString('bn-BD');
+            document.getElementById('stat-due').innerText = due.toLocaleString('bn-BD');
+            document.getElementById('stat-gonda').innerText = gonda.toLocaleString('bn-BD');
+        }
+
+        function renderList(data) {
+            const container = document.getElementById('customer-list');
+            container.innerHTML = '';
+            
+            let filtered = showOnlyDue ? data.filter(d => d.due > 0) : data;
+
+            filtered.reverse().forEach(item => {
+                const card = document.createElement('div');
+                card.className = "glass p-4 rounded-2xl flex justify-between items-center";
+                card.innerHTML = `
+                    <div>
+                        <p class="font-bold text-white">${item.name}</p>
+                        <p class="text-[10px] text-gray-500">${item.date} • ${item.gonda} গন্ডা</p>
+                    </div>
+                    <div class="text-right">
+                        <p class="text-sm font-bold ${item.due > 0 ? 'text-red-400' : 'text-green-400'}">৳ ${item.due}</p>
+                        <p class="text-[9px] text-gray-500 uppercase tracking-tighter">বাকি টাকা</p>
+                    </div>
+                `;
+                container.appendChild(card);
             });
         }
 
-        // --- CUSTOMER LIST ---
-        function loadCustomers() {
-            const tx = db.transaction("records", "readonly");
-            const store = tx.objectStore("records");
-            const req = store.getAll();
+        function toggleDueFilter() {
+            showOnlyDue = !showOnlyDue;
+            document.getElementById('filter-btn').innerText = showOnlyDue ? "শুধু বাকি" : "সব কাস্টমার";
+            refreshUI();
+        }
 
-            req.onsuccess = () => {
-                const list = document.getElementById('customer-list');
-                list.innerHTML = '';
-                let data = req.result.reverse();
-
-                if(dueOnlyMode) data = data.filter(r => r.due > 0);
-
-                data.forEach(r => {
-                    const card = document.createElement('div');
-                    card.className = "glass-card p-4 flex justify-between items-center";
-                    card.innerHTML = `
-                        <div>
-                            <p class="font-bold text-white">${r.name}</p>
-                            <p class="text-xs text-gray-500">${r.date} • ${r.gonda} গন্ডা</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-bold ${r.due > 0 ? 'text-red-400' : 'text-green-400'}">৳ ${r.due.toLocaleString('bn-BD')}</p>
-                            <p class="text-[10px] text-gray-500">বাকি</p>
-                        </div>
-                    `;
-                    list.appendChild(card);
-                    gsap.from(card, { opacity: 0, x: -10, delay: 0.1 });
-                });
+        function exportJSON() {
+            const tx = db.transaction("entries", "readonly");
+            const store = tx.objectStore("entries");
+            store.getAll().onsuccess = (e) => {
+                const data = JSON.stringify(e.target.result, null, 2);
+                const blob = new Blob([data], {type: "application/json"});
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Harvester_Backup_${new Date().toLocaleDateString()}.json`;
+                a.click();
             };
         }
 
-        function toggleDueOnly() {
-            dueOnlyMode = !dueOnlyMode;
-            const btn = document.getElementById('dueFilterBtn');
-            btn.innerText = dueOnlyMode ? "বাকি কাস্টমার (ON)" : "বাকি কাস্টমার (OFF)";
-            btn.classList.toggle('border-cyan-400');
-            btn.classList.toggle('text-cyan-400');
-            loadCustomers();
-        }
-
-        // --- CHARTS ---
-        let myChart;
-        function updateChart(data = []) {
-            const ctx = document.getElementById('salesChart').getContext('2d');
-            const last7Days = data.slice(-7);
-            
-            if(myChart) myChart.destroy();
-            myChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: last7Days.map(d => d.name),
-                    datasets: [{
-                        label: 'বিক্রি',
-                        data: last7Days.map(d => d.total),
-                        borderColor: '#00f2ff',
-                        backgroundColor: 'rgba(0, 242, 255, 0.1)',
-                        fill: true,
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#666' } },
-                        x: { grid: { display: false }, ticks: { color: '#666' } }
-                    }
-                }
-            });
-        }
-
-        // --- EXPORT SYSTEMS ---
-        async function exportToExcel() {
-            const tx = db.transaction("records", "readonly");
-            const store = tx.objectStore("records");
-            const data = await new Promise(r => store.getAll().onsuccess = e => r(e.target.result));
-            
-            const worksheet = XLSX.utils.json_to_sheet(data);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "Records");
-            XLSX.writeFile(workbook, "Harvester_Pro_Report.xlsx");
-        }
-
-        async function generatePDF() {
-            const tx = db.transaction("records", "readonly");
-            const store = tx.objectStore("records");
-            const data = await new Promise(r => store.getAll().onsuccess = e => r(e.target.result));
-            
-            const tableBody = document.getElementById('pdf-table-body');
-            tableBody.innerHTML = data.map(r => `
-                <tr>
-                    <td class="border p-2">${r.name}</td>
-                    <td class="border p-2">${r.gonda}</td>
-                    <td class="border p-2">${r.total}</td>
-                    <td class="border p-2">${r.due}</td>
-                </tr>
-            `).join('');
-
-            const element = document.getElementById('pdf-template');
-            element.classList.remove('hidden');
-            html2pdf().from(element).save("Report_Rafique_Enterprise.pdf").then(() => {
-                element.classList.add('hidden');
-            });
-        }
-
-        function exportToJPG() {
-            const element = document.getElementById('home');
-            html2canvas(element).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'Summary_Report.jpg';
-                link.href = canvas.toDataURL();
-                link.click();
-            });
-        }
-
-        function syncData() {
-            alert("Cloud Sync এ বর্তমানে শুধুমাত্র লোকাল ডাটা সুরক্ষিত আছে। GitHub API ইন্টিগ্রেশন প্রসেসিং এ আছে।");
-        }
-
-        // Initialize Tab
-        showTab('home');
-
+        // Init Tab
+        switchTab('home');
     </script>
 </body>
 </html>
