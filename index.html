@@ -1,163 +1,498 @@
 <!DOCTYPE html>
-<html>
+<html lang="bn">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Harvester Pro</title>
-
-<style>
-body{
-  margin:0;
-  font-family:system-ui;
-  background:#0b1220;
-  color:white;
-}
-
-.nav{
-  padding:15px;
-  background:#111a2e;
-  font-weight:bold;
-  font-size:18px;
-}
-
-.container{
-  padding:15px;
-}
-
-.card{
-  background:#18233a;
-  padding:15px;
-  margin:10px 0;
-  border-radius:15px;
-  box-shadow:0 10px 20px rgba(0,0,0,0.3);
-}
-
-input{
-  width:100%;
-  padding:10px;
-  margin:5px 0;
-  border-radius:8px;
-  border:none;
-}
-
-button{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#00c896;
-  color:white;
-  font-weight:bold;
-}
-
-.item{
-  background:#101827;
-  padding:10px;
-  margin-top:10px;
-  border-radius:10px;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <title>হারভেস্টার প্রো - রফিক এন্টারপ্রাইজ</title>
+  <!-- Tailwind + Fonts + Libraries -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
+  <style>
+    * {
+      font-family: 'Noto Sans Bengali', 'Hind Siliguri', system-ui, sans-serif;
+    }
+    body {
+      background: radial-gradient(circle at 10% 20%, rgba(0,20,30,1) 0%, rgba(0,0,0,1) 100%);
+      min-height: 100vh;
+      padding-bottom: 80px;
+    }
+    /* Glassmorphism card */
+    .glass-card {
+      background: rgba(15, 25, 35, 0.65);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(0, 255, 255, 0.2);
+      border-radius: 32px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,255,255,0.1);
+    }
+    .neon-glow {
+      box-shadow: 0 0 8px rgba(0, 255, 255, 0.6), 0 0 2px rgba(0,255,255,0.8);
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #00c6ff, #0072ff);
+      border: none;
+      transition: all 0.2s ease;
+    }
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+    input, select, textarea {
+      background: rgba(0,0,0,0.5);
+      border: 1px solid rgba(0,255,255,0.4);
+      border-radius: 20px;
+      padding: 12px 16px;
+      color: white;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #00ffff;
+      box-shadow: 0 0 8px cyan;
+    }
+    .glass-tab {
+      background: rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+      border-radius: 40px;
+    }
+    .customer-card {
+      background: rgba(10,20,30,0.7);
+      backdrop-filter: blur(4px);
+      border-left: 4px solid #00ffff;
+      transition: all 0.2s;
+    }
+    .customer-card:active {
+      transform: scale(0.98);
+    }
+    /* mobile optimized scroll */
+    ::-webkit-scrollbar {
+      width: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0a1922;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: cyan;
+      border-radius: 10px;
+    }
+    .animate-pulse-glow {
+      animation: glowPulse 1.2s ease-out;
+    }
+    @keyframes glowPulse {
+      0% { text-shadow: 0 0 0px cyan; opacity: 1;}
+      50% { text-shadow: 0 0 12px cyan; background: rgba(0,255,255,0.2);}
+      100% { text-shadow: 0 0 0px cyan; }
+    }
+  </style>
 </head>
+<body class="text-white">
 
-<body>
+<div id="app" class="max-w-md mx-auto px-4 py-5 space-y-5">
+  <!-- Header Section -->
+  <div class="flex justify-between items-center">
+    <div>
+      <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">হারভেস্টার প্রো</h1>
+      <p class="text-sm text-cyan-200/70">রফিক এন্টারপ্রাইজ</p>
+    </div>
+    <div class="glass-card px-3 py-1 text-xs font-mono">🚜 ধান কাটা</div>
+  </div>
 
-<div class="nav">🚜 Harvester Pro Dashboard</div>
+  <!-- Dashboard Summary Cards (Real-time) -->
+  <div class="grid grid-cols-2 gap-3">
+    <div class="glass-card p-3 text-center">
+      <div class="text-xs text-cyan-300">আজকের বিক্রি</div>
+      <div class="text-xl font-bold" id="todaySales">৳ ০</div>
+    </div>
+    <div class="glass-card p-3 text-center">
+      <div class="text-xs text-cyan-300">আজকের নগদ</div>
+      <div class="text-xl font-bold" id="todayCash">৳ ০</div>
+    </div>
+    <div class="glass-card p-3 text-center">
+      <div class="text-xs text-cyan-300">আজকের বাকি</div>
+      <div class="text-xl font-bold" id="todayDue">৳ ০</div>
+    </div>
+    <div class="glass-card p-3 text-center">
+      <div class="text-xs text-cyan-300">আজকের জমি</div>
+      <div class="text-sm font-bold" id="todayLand">০ কানি</div>
+    </div>
+  </div>
 
-<div class="container">
+  <div class="grid grid-cols-3 gap-2">
+    <div class="glass-card p-2 text-center text-xs"><span class="text-cyan-200">মোট বিক্রি</span><br><span id="totalSalesAll">৳০</span></div>
+    <div class="glass-card p-2 text-center text-xs"><span class="text-cyan-200">মোট বাকি</span><br><span id="totalDueAll">৳০</span></div>
+    <div class="glass-card p-2 text-center text-xs"><span class="text-cyan-200">মোট সংগ্রহ</span><br><span id="totalCollectedAll">৳০</span></div>
+  </div>
 
-<!-- INPUT -->
-<div class="card">
-  <h3>➕ Customer Add</h3>
+  <!-- Tabs Navigation -->
+  <div class="flex gap-2 glass-tab p-1 rounded-full">
+    <button data-tab="entry" class="tab-btn flex-1 py-2 rounded-full text-sm font-medium transition-all">➕ এন্ট্রি</button>
+    <button data-tab="customers" class="tab-btn flex-1 py-2 rounded-full text-sm font-medium transition-all">👥 গ্রাহক</button>
+    <button data-tab="reports" class="tab-btn flex-1 py-2 rounded-full text-sm font-medium transition-all">📊 রিপোর্ট</button>
+    <button data-tab="analytics" class="tab-btn flex-1 py-2 rounded-full text-sm font-medium transition-all">📈 বিশ্লেষণ</button>
+  </div>
 
-  <input id="name" placeholder="নাম">
-  <input id="amount" placeholder="পরিমাণ">
-  <input id="rate" placeholder="রেট">
-  <input id="paid" placeholder="নগদ পেয়েছে">
-
-  <button onclick="save()">Save</button>
-</div>
-
-<!-- SUMMARY -->
-<div class="card">
-  <h3>📊 Summary</h3>
-  <p>Income: <span id="income">0</span> ৳</p>
-  <p>Due: <span id="due">0</span> ৳</p>
-</div>
-
-<!-- LIST -->
-<div id="list"></div>
-
-</div>
-
-<script type="module">
-
-// Firebase import
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getDatabase, ref, push, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
-
-// 🔥 তোমার Firebase config (এটা আগের মতোই রাখো)
-const firebaseConfig = {
-  apiKey: "AIzaSyAzlYbdNJMey9lGM1LBA6e3-HgSkFWV2TA",
-  authDomain: "harvester-app-64764.firebaseapp.com",
-  databaseURL: "https://harvester-app-64764-default-rtdb.firebaseio.com",
-  projectId: "harvester-app-64764",
-  appId: "1:73768061791:web:4d0448c26c7890774344ea"
-};
-
-// init
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
-
-// SAVE DATA
-window.save = function(){
-
-  let name = document.getElementById("name").value;
-  let amount = Number(document.getElementById("amount").value);
-  let rate = Number(document.getElementById("rate").value);
-  let paid = Number(document.getElementById("paid").value || 0);
-
-  let total = amount * rate;
-
-  push(ref(db,"customers"),{
-    name,
-    amount,
-    rate,
-    paid,
-    total,
-    due: total - paid,
-    date: new Date().toLocaleDateString()
-  });
-
-  alert("Saved!");
-}
-
-// LOAD DATA
-onValue(ref(db,"customers"),(snap)=>{
-
-  let data = snap.val();
-  let html = "";
-  let income = 0;
-  let due = 0;
-
-  for(let key in data){
-    income += data[key].total;
-    due += data[key].due;
-
-    html += `
-      <div class="item">
-        <b>${data[key].name}</b><br>
-        Total: ${data[key].total} ৳<br>
-        Due: ${data[key].due} ৳
+  <!-- ENTRY FORM TAB -->
+  <div id="entryTab" class="tab-content glass-card p-4 space-y-4">
+    <div class="space-y-3">
+      <input type="text" id="customerName" placeholder="গ্রাহকের নাম *" class="w-full text-sm">
+      <select id="landType" class="w-full text-sm">
+        <option value="গন্ডা">গন্ডা</option>
+        <option value="কাঠা">কাঠা</option>
+        <option value="কানি">কানি</option>
+      </select>
+      <div class="flex gap-2">
+        <input type="number" id="quantity" placeholder="পরিমাণ *" class="w-1/2 text-sm" step="any">
+        <input type="number" id="rate" placeholder="রেট (৳)" class="w-1/2 text-sm" step="any">
       </div>
-    `;
+      <div class="flex gap-2">
+        <input type="number" id="cashPaid" placeholder="নগদ (টাকা)" class="w-1/2 text-sm" step="any">
+        <input type="text" id="comment" placeholder="মন্তব্য (ঐচ্ছিক)" class="w-1/2 text-sm">
+      </div>
+      <input type="date" id="entryDate" class="w-full text-sm">
+      <!-- live preview -->
+      <div class="bg-black/40 rounded-2xl p-3 border border-cyan-500/30">
+        <div class="flex justify-between text-xs"><span>মোট টাকা:</span><span id="liveTotal" class="font-bold text-cyan-300">৳ ০</span></div>
+        <div class="flex justify-between text-xs"><span>নগদ:</span><span id="liveCashPreview">৳ ০</span></div>
+        <div class="flex justify-between text-xs"><span>বাকি থাকল:</span><span id="liveDuePreview" class="text-rose-300">৳ ০</span></div>
+      </div>
+      <button id="saveEntryBtn" class="btn-primary w-full py-3 rounded-2xl font-bold text-white shadow-lg">💾 সংরক্ষণ করুন</button>
+    </div>
+  </div>
+
+  <!-- CUSTOMERS TAB -->
+  <div id="customersTab" class="tab-content hidden glass-card p-4 space-y-4">
+    <div class="flex justify-between items-center">
+      <button id="bakiToggleBtn" class="bg-cyan-800/50 px-4 py-2 rounded-full text-sm border border-cyan-400">🔘 শুধু বাকি দেখুন</button>
+      <span id="filterStatus" class="text-xs text-cyan-300">সব গ্রাহক</span>
+    </div>
+    <div id="customersListContainer" class="max-h-[450px] overflow-y-auto space-y-3"></div>
+  </div>
+
+  <!-- REPORTS TAB -->
+  <div id="reportsTab" class="tab-content hidden glass-card p-4 space-y-5">
+    <button id="exportExcelBtn" class="bg-emerald-700 w-full py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold">📎 এক্সেল রিপোর্ট</button>
+    <button id="exportJpgBtn" class="bg-blue-800 w-full py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold">🖼 জেপিজি রিপোর্ট</button>
+    <button id="exportPdfBtn" class="bg-red-800 w-full py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold">📄 পিডিএফ রিপোর্ট</button>
+    <div class="text-center text-xs text-gray-400">প্রফেশনাল ফিন্যান্সিয়াল রিপোর্ট</div>
+  </div>
+
+  <!-- ANALYTICS CHARTS TAB -->
+  <div id="analyticsTab" class="tab-content hidden glass-card p-4 space-y-6">
+    <canvas id="dailyTrendChart" height="150" class="w-full"></canvas>
+    <canvas id="dueVsPaidChart" height="150" class="w-full"></canvas>
+    <canvas id="landDistributionChart" height="150" class="w-full"></canvas>
+  </div>
+
+  <!-- Modal for customer details -->
+  <div id="customerModal" class="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 hidden transition-all" style="padding: 1rem;">
+    <div class="glass-card w-full max-w-sm p-5 space-y-3">
+      <h3 class="text-xl font-bold" id="modalName"></h3>
+      <div class="border-t border-cyan-500/30 pt-2 space-y-2 text-sm">
+        <p>জমির ধরন: <span id="modalLandType"></span></p>
+        <p>পরিমাণ: <span id="modalAmount"></span></p>
+        <p>মোট টাকা: <span id="modalTotal">৳</span></p>
+        <p>নগদ: <span id="modalCash">৳</span></p>
+        <p class="text-rose-300">বাকি: <span id="modalDue">৳</span></p>
+        <p>মন্তব্য: <span id="modalComment"></span></p>
+        <p>তারিখ: <span id="modalDate"></span></p>
+      </div>
+      <button id="closeModalBtn" class="btn-primary w-full py-2 rounded-xl">বন্ধ করুন</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---------- IndexedDB Setup ----------
+  const DB_NAME = "HarvesterProDB";
+  const STORE_NAME = "transactions";
+  let db = null;
+
+  function openDB() {
+    return new Promise((resolve, reject) => {
+      const request = indexedDB.open(DB_NAME, 2);
+      request.onerror = () => reject(request.error);
+      request.onsuccess = () => { db = request.result; resolve(db); };
+      request.onupgradeneeded = (event) => {
+        const database = event.target.result;
+        if (!database.objectStoreNames.contains(STORE_NAME)) {
+          const store = database.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true });
+          store.createIndex("date", "date", { unique: false });
+          store.createIndex("name", "name", { unique: false });
+        }
+      };
+    });
   }
 
-  document.getElementById("list").innerHTML = html;
-  document.getElementById("income").innerText = income;
-  document.getElementById("due").innerText = due;
+  async function getAllRecords() {
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readonly");
+      const store = tx.objectStore(STORE_NAME);
+      const request = store.getAll();
+      request.onsuccess = () => resolve(request.result || []);
+      request.onerror = () => reject(request.error);
+    });
+  }
 
-});
+  async function saveRecord(record) {
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(STORE_NAME, "readwrite");
+      const store = tx.objectStore(STORE_NAME);
+      const req = store.add(record);
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  // Land conversion helpers (internal normalization: store in kani base for summary, but show raw)
+  function toKani(quantity, landType) {
+    let val = parseFloat(quantity) || 0;
+    if (landType === "গন্ডা") return val / 20;
+    if (landType === "কাঠা") return val / 5;
+    if (landType === "কানি") return val;
+    return 0;
+  }
+
+  // UI update all dashboards & charts
+  let chartDaily, chartDuePaid, chartLandDist;
+
+  async function refreshAllUI() {
+    const records = await getAllRecords();
+    const today = new Date().toISOString().slice(0,10);
+    let todaySales = 0, todayCash = 0, todayDue = 0, todayLandKani = 0;
+    let totalSalesAll = 0, totalDueAll = 0, totalCollectedAll = 0;
+    for(let rec of records) {
+      const total = rec.totalAmount || (rec.quantity * rec.rate);
+      const cash = rec.cashPaid || 0;
+      const due = total - cash;
+      totalSalesAll += total;
+      totalCollectedAll += cash;
+      totalDueAll += due;
+      if(rec.date === today) {
+        todaySales += total;
+        todayCash += cash;
+        todayDue += due;
+        let landKani = toKani(rec.quantity, rec.landType);
+        todayLandKani += landKani;
+      }
+    }
+    document.getElementById("todaySales").innerHTML = `৳ ${todaySales.toLocaleString()}`;
+    document.getElementById("todayCash").innerHTML = `৳ ${todayCash.toLocaleString()}`;
+    document.getElementById("todayDue").innerHTML = `৳ ${todayDue.toLocaleString()}`;
+    document.getElementById("todayLand").innerHTML = `${todayLandKani.toFixed(2)} কানি`;
+    document.getElementById("totalSalesAll").innerHTML = `৳ ${totalSalesAll.toLocaleString()}`;
+    document.getElementById("totalDueAll").innerHTML = `৳ ${totalDueAll.toLocaleString()}`;
+    document.getElementById("totalCollectedAll").innerHTML = `৳ ${totalCollectedAll.toLocaleString()}`;
+    // refresh customer list and charts
+    await renderCustomersList();
+    updateAnalyticsCharts(records);
+  }
+
+  let showOnlyDue = false;
+  async function renderCustomersList() {
+    let records = await getAllRecords();
+    if(showOnlyDue) {
+      records = records.filter(r => (r.totalAmount - (r.cashPaid||0)) > 0);
+      document.getElementById("filterStatus").innerText = "শুধু বাকি গ্রাহক";
+    } else {
+      document.getElementById("filterStatus").innerText = "সব গ্রাহক";
+    }
+    const container = document.getElementById("customersListContainer");
+    if(!container) return;
+    container.innerHTML = "";
+    for(let rec of records) {
+      const total = rec.totalAmount;
+      const paid = rec.cashPaid || 0;
+      const due = total - paid;
+      const card = document.createElement("div");
+      card.className = "customer-card p-3 rounded-2xl cursor-pointer";
+      card.innerHTML = `
+        <div class="flex justify-between items-start">
+          <div><span class="font-bold text-cyan-200">${rec.name}</span><div class="text-xs text-gray-300">${rec.landType} ${rec.quantity} (${rec.date})</div></div>
+          <div class="text-right"><div class="text-sm">মোট: ৳${total.toLocaleString()}</div><div class="text-xs text-green-300">নগদ: ৳${paid.toLocaleString()}</div><div class="text-xs text-rose-300">বাকি: ৳${due.toLocaleString()}</div></div>
+        </div>
+      `;
+      card.addEventListener("click", () => showCustomerDetails(rec));
+      container.appendChild(card);
+    }
+  }
+
+  function showCustomerDetails(rec) {
+    document.getElementById("modalName").innerText = rec.name;
+    document.getElementById("modalLandType").innerText = `${rec.landType} ${rec.quantity}`;
+    const total = rec.totalAmount;
+    const paid = rec.cashPaid||0;
+    document.getElementById("modalTotal").innerHTML = `৳ ${total.toLocaleString()}`;
+    document.getElementById("modalCash").innerHTML = `৳ ${paid.toLocaleString()}`;
+    document.getElementById("modalDue").innerHTML = `৳ ${(total-paid).toLocaleString()}`;
+    document.getElementById("modalComment").innerText = rec.comment || "—";
+    document.getElementById("modalDate").innerText = rec.date;
+    document.getElementById("customerModal").classList.remove("hidden");
+  }
+
+  // live calculation
+  function updateLivePreview() {
+    const qty = parseFloat(document.getElementById("quantity").value) || 0;
+    const rate = parseFloat(document.getElementById("rate").value) || 0;
+    const cash = parseFloat(document.getElementById("cashPaid").value) || 0;
+    const total = qty * rate;
+    const due = total - cash;
+    document.getElementById("liveTotal").innerHTML = `৳ ${total.toLocaleString()}`;
+    document.getElementById("liveCashPreview").innerHTML = `৳ ${cash.toLocaleString()}`;
+    document.getElementById("liveDuePreview").innerHTML = `৳ ${due.toLocaleString()}`;
+    if(total>0) gsap.to("#liveTotal", {duration:0.2, scale:1.05, yoyo:true, repeat:1});
+  }
+
+  async function saveEntry() {
+    const name = document.getElementById("customerName").value.trim();
+    const landType = document.getElementById("landType").value;
+    const quantity = parseFloat(document.getElementById("quantity").value);
+    const rate = parseFloat(document.getElementById("rate").value);
+    const cashPaid = parseFloat(document.getElementById("cashPaid").value) || 0;
+    const comment = document.getElementById("comment").value.trim();
+    let date = document.getElementById("entryDate").value;
+    if(!name || isNaN(quantity) || isNaN(rate) || quantity<=0 || rate<=0) {
+      alert("দয়া করে নাম, পরিমাণ ও রেট সঠিকভাবে দিন");
+      return;
+    }
+    if(!date) date = new Date().toISOString().slice(0,10);
+    const totalAmount = quantity * rate;
+    const due = totalAmount - cashPaid;
+    const record = { name, landType, quantity, rate, totalAmount, cashPaid, due, comment, date };
+    await saveRecord(record);
+    gsap.fromTo("#saveEntryBtn", {scale:0.95}, {scale:1, duration:0.2});
+    document.getElementById("customerName").value = "";
+    document.getElementById("quantity").value = "";
+    document.getElementById("rate").value = "";
+    document.getElementById("cashPaid").value = "";
+    document.getElementById("comment").value = "";
+    document.getElementById("entryDate").value = date;
+    await refreshAllUI();
+  }
+
+  // Analytics charts from real data
+  async function updateAnalyticsCharts(records) {
+    const last7Days = [...Array(7)].map((_,i) => {
+      let d = new Date(); d.setDate(d.getDate()-i); return d.toISOString().slice(0,10);
+    }).reverse();
+    const dailySales = last7Days.map(day => records.filter(r=>r.date===day).reduce((sum,r)=>sum+(r.totalAmount||0),0));
+    const totalPaidAll = records.reduce((s,r)=>s+(r.cashPaid||0),0);
+    const totalDueAll = records.reduce((s,r)=>s+(r.totalAmount-(r.cashPaid||0)),0);
+    const landData = {গন্ডা:0, কাঠা:0, কানি:0};
+    records.forEach(r=>{ landData[r.landType] += (r.quantity || 0); });
+    
+    if(chartDaily) chartDaily.destroy();
+    if(chartDuePaid) chartDuePaid.destroy();
+    if(chartLandDist) chartLandDist.destroy();
+
+    const ctx1 = document.getElementById("dailyTrendChart").getContext("2d");
+    chartDaily = new Chart(ctx1, { type: 'line', data: { labels: last7Days.map(d=>d.slice(5)), datasets: [{ label: 'দৈনিক বিক্রি (৳)', data: dailySales, borderColor: '#0ff', backgroundColor: 'rgba(0,255,255,0.1)', tension:0.3, fill:true }] }, options: { responsive: true, maintainAspectRatio: true } });
+    const ctx2 = document.getElementById("dueVsPaidChart").getContext("2d");
+    chartDuePaid = new Chart(ctx2, { type: 'doughnut', data: { labels: ['নগদ সংগ্রহ', 'বাকি'], datasets: [{ data: [totalPaidAll, totalDueAll], backgroundColor: ['#00b894', '#ff7675'] }] }, options: { responsive: true } });
+    const ctx3 = document.getElementById("landDistributionChart").getContext("2d");
+    chartLandDist = new Chart(ctx3, { type: 'bar', data: { labels: ['গন্ডা', 'কাঠা', 'কানি'], datasets: [{ label: 'জমির পরিমাণ (একক)', data: [landData.গন্ডা, landData.কাঠা, landData.কানি], backgroundColor: 'cyan' }] }, options: { responsive: true } });
+  }
+
+  // EXPORT EXCEL (XLSX)
+  async function exportToExcel() {
+    const records = await getAllRecords();
+    const wsData = [["নাম", "জমির ধরন", "পরিমাণ", "রেট", "মোট", "নগদ", "বাকি", "তারিখ", "মন্তব্য"]];
+    for(let r of records) {
+      wsData.push([r.name, r.landType, r.quantity, r.rate, r.totalAmount, r.cashPaid||0, (r.totalAmount-(r.cashPaid||0)), r.date, r.comment||""]);
+    }
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "রিপোর্ট");
+    XLSX.writeFile(wb, `হারভেস্টার_রিপোর্ট_${new Date().toISOString().slice(0,10)}.xlsx`);
+  }
+
+  // JPG Export using html-to-image (capture report style div)
+  async function exportJPG() {
+    const records = await getAllRecords();
+    let totalSales = records.reduce((s,r)=>s+r.totalAmount,0);
+    let totalCash = records.reduce((s,r)=>s+(r.cashPaid||0),0);
+    let totalDue = totalSales - totalCash;
+    const tempDiv = document.createElement("div");
+    tempDiv.style.width = "400px";
+    tempDiv.style.padding = "20px";
+    tempDiv.style.background = "#0a1015";
+    tempDiv.style.color = "white";
+    tempDiv.style.fontFamily = "'Noto Sans Bengali', sans-serif";
+    tempDiv.innerHTML = `<div style="border:1px solid cyan; padding:16px; border-radius:24px;"><h2 style="color:cyan;">HARVESTER PRO — রফিক এন্টারপ্রাইজ</h2><hr/><p>মোট বিক্রি: ৳${totalSales.toLocaleString()}</p><p>মোট নগদ: ৳${totalCash.toLocaleString()}</p><p>মোট বাকি: ৳${totalDue.toLocaleString()}</p><p>মোট লেনদেন: ${records.length}</p><small>তারিখ: ${new Date().toLocaleString()}</small></div>`;
+    document.body.appendChild(tempDiv);
+    const dataUrl = await htmlToImage.toJpeg(tempDiv, { quality: 0.95 });
+    const link = document.createElement('a');
+    link.download = 'হারভেস্টার_প্রো_রিপোর্ট.jpg';
+    link.href = dataUrl;
+    link.click();
+    document.body.removeChild(tempDiv);
+  }
+
+  async function exportPDF() {
+    const { jsPDF } = window.jspdf;
+    const records = await getAllRecords();
+    let totalSales = records.reduce((s,r)=>s+r.totalAmount,0);
+    let totalCash = records.reduce((s,r)=>s+(r.cashPaid||0),0);
+    let totalDue = totalSales - totalCash;
+    let totalLandKani = records.reduce((s,r)=>s+toKani(r.quantity, r.landType),0);
+    const doc = new jsPDF();
+    doc.setFont("helvetica");
+    doc.text("HARVESTER PRO — রফিক এন্টারপ্রাইজ", 14, 20);
+    doc.text(`মোট বিক্রি: ৳${totalSales.toLocaleString()}`, 14, 35);
+    doc.text(`মোট নগদ: ৳${totalCash.toLocaleString()}`, 14, 45);
+    doc.text(`মোট বাকি: ৳${totalDue.toLocaleString()}`, 14, 55);
+    doc.text(`মোট জমি (কানি): ${totalLandKani.toFixed(2)}`, 14, 65);
+    doc.text(`সৃষ্টির তারিখ: ${new Date().toLocaleString()}`, 14, 80);
+    let y = 100;
+    doc.text("লেনদেন সংক্ষেপ:", 14, y); y+=8;
+    for(let i=0; i<Math.min(records.length, 20); i++){
+      let r = records[i];
+      doc.text(`${r.name} - ${r.landType} ${r.quantity} - মোট ৳${r.totalAmount} - নগদ ৳${r.cashPaid||0}`, 14, y);
+      y+=6;
+      if(y>270) break;
+    }
+    doc.save(`হারভেস্টার_প্রো_${new Date().toISOString().slice(0,10)}.pdf`);
+  }
+
+  // Tab switching
+  const tabs = document.querySelectorAll(".tab-btn");
+  const contents = {
+    entry: document.getElementById("entryTab"),
+    customers: document.getElementById("customersTab"),
+    reports: document.getElementById("reportsTab"),
+    analytics: document.getElementById("analyticsTab")
+  };
+  function switchTab(tabId){
+    Object.keys(contents).forEach(k => contents[k].classList.add("hidden"));
+    contents[tabId].classList.remove("hidden");
+    tabs.forEach(btn => {
+      if(btn.dataset.tab === tabId) btn.classList.add("bg-cyan-600", "text-white");
+      else btn.classList.remove("bg-cyan-600", "text-white");
+    });
+    if(tabId === "customers") renderCustomersList();
+    if(tabId === "analytics") refreshAllUI();
+  }
+  tabs.forEach(btn => btn.addEventListener("click", ()=>switchTab(btn.dataset.tab)));
+
+  // initialization
+  window.addEventListener("load", async () => {
+    await openDB();
+    await refreshAllUI();
+    document.getElementById("entryDate").value = new Date().toISOString().slice(0,10);
+    document.getElementById("quantity").addEventListener("input", updateLivePreview);
+    document.getElementById("rate").addEventListener("input", updateLivePreview);
+    document.getElementById("cashPaid").addEventListener("input", updateLivePreview);
+    document.getElementById("saveEntryBtn").addEventListener("click", saveEntry);
+    document.getElementById("exportExcelBtn").addEventListener("click", exportToExcel);
+    document.getElementById("exportJpgBtn").addEventListener("click", exportJPG);
+    document.getElementById("exportPdfBtn").addEventListener("click", exportPDF);
+    document.getElementById("bakiToggleBtn").addEventListener("click", () => { showOnlyDue = !showOnlyDue; renderCustomersList(); });
+    document.getElementById("closeModalBtn").addEventListener("click", () => document.getElementById("customerModal").classList.add("hidden"));
+    updateLivePreview();
+    switchTab("entry");
+  });
 
 </script>
-
 </body>
 </html>
