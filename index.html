@@ -3,314 +3,618 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HARVESTER PRO — রফিক এন্টারপ্রাইজ</title>
+    <title>Harvester Pro | রফিক এন্টারপ্রাইজ</title>
     
-    <!-- Fonts & Scripts -->
-    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide-static/0.321.0/lucide.min.js"></script>
+    
+    <!-- Core Libraries -->
+    <script src="https://unpkg.com/dexie/dist/dexie.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 
     <style>
         body {
             font-family: 'Hind Siliguri', sans-serif;
-            background: linear-gradient(135deg, #0f172a 0%, #020617 100%);
-            color: #f8fafc;
-            min-height: 100vh;
+            background: #0f172a;
+            color: #f1f5f9;
             overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
+            -webkit-tap-highlight-color: transparent;
         }
-
-        /* Apple Glassmorphism */
-        .glass {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+        .glass-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
-
-        .tab-active {
-            background: rgba(255, 255, 255, 0.1) !important;
-            color: #38bdf8 !important;
-            border-top: 2px solid #38bdf8;
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
         }
-
-        /* Mobile Layout */
-        .safe-area { padding-bottom: calc(constant(safe-area-inset-bottom) + 80px); padding-bottom: calc(env(safe-area-inset-bottom) + 80px); }
-        
-        .tab-content { display: none; }
-        .active { display: block; }
-
-        input {
-            background: rgba(255, 255, 255, 0.05) !important;
-            border: 1px solid rgba(255, 255, 255, 0.1) !important;
-            border-radius: 14px !important;
-            padding: 12px 16px !important;
-            color: white !important;
-            outline: none !important;
+        .active-tab {
+            color: #22c55e;
+            position: relative;
         }
-
-        input:focus { border-color: #38bdf8 !important; box-shadow: 0 0 10px rgba(56, 189, 248, 0.2); }
-
-        .btn-primary {
-            background: linear-gradient(90deg, #0ea5e9, #2563eb);
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+        .active-tab::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5px;
+            height: 5px;
+            background: #22c55e;
+            border-radius: 50%;
+        }
+        input, select {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(71, 85, 105, 0.5);
+            color: white;
+        }
+        input:focus {
+            border-color: #22c55e;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #22c55e 0%, #15803d 100%);
         }
     </style>
 </head>
-<body class="safe-area">
+<body class="pb-24">
 
-    <!-- Header -->
-    <header class="p-5 flex justify-between items-center sticky top-0 z-50 glass rounded-b-3xl border-none">
-        <div>
-            <p class="text-xs text-blue-400 font-bold tracking-widest uppercase">System Active</p>
-            <h1 class="text-xl font-bold">রফিক এন্টারপ্রাইজ</h1>
-        </div>
-        <div class="h-10 w-10 glass rounded-full flex items-center justify-center border-blue-500/30">
-            <span class="text-blue-400 text-lg">🌾</span>
-        </div>
-    </header>
-
-    <!-- Content Sections -->
-    <div id="main-content" class="p-4 space-y-6">
-        
-        <!-- Tab 1: Home Dashboard -->
-        <section id="home" class="tab-content active space-y-4">
-            <div class="grid grid-cols-2 gap-3">
-                <div class="glass p-5 rounded-[24px] col-span-2">
-                    <p class="text-gray-400 text-sm">মোট বিক্রি (আজ)</p>
-                    <h2 class="text-4xl font-bold mt-2">৳ <span id="stat-total">0</span></h2>
-                </div>
-                <div class="glass p-4 rounded-[22px]">
-                    <p class="text-gray-400 text-xs">মোট নগদ</p>
-                    <h3 class="text-lg font-bold text-green-400">৳ <span id="stat-cash">0</span></h3>
-                </div>
-                <div class="glass p-4 rounded-[22px]">
-                    <p class="text-gray-400 text-xs">মোট বাকি</p>
-                    <h3 class="text-lg font-bold text-red-400">৳ <span id="stat-due">0</span></h3>
-                </div>
-                <div class="glass p-4 rounded-[22px] col-span-2">
-                    <p class="text-gray-400 text-xs">মোট গন্ডা কাটা হয়েছে</p>
-                    <h3 class="text-lg font-bold text-blue-400"><span id="stat-gonda">0</span> গন্ডা</h3>
-                </div>
+    <!-- App Root -->
+    <div id="app">
+        <!-- Loader -->
+        <div id="loader" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950">
+            <div class="text-center">
+                <div class="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <h1 class="text-2xl font-bold text-green-500 tracking-wider">HARVESTER PRO</h1>
+                <p class="text-slate-400 text-sm">রফিক এন্টারপ্রাইজ</p>
             </div>
-        </section>
+        </div>
 
-        <!-- Tab 2: Customers Entry -->
-        <section id="customers" class="tab-content space-y-5">
-            <div class="glass p-6 rounded-[28px] border-white/5">
-                <h2 class="text-lg font-bold mb-4 flex items-center gap-2">
-                    <span class="w-1.5 h-5 bg-blue-500 rounded-full"></span> নতুন এন্ট্রি
-                </h2>
-                <div class="space-y-4">
-                    <input type="text" id="cust-name" placeholder="কাস্টমারের নাম" class="w-full">
-                    <div class="grid grid-cols-2 gap-3">
-                        <input type="number" id="cust-gonda" oninput="calculateLive()" placeholder="গন্ডা">
-                        <input type="number" id="cust-rate" oninput="calculateLive()" placeholder="রেট">
-                    </div>
-                    <input type="number" id="cust-cash" oninput="calculateLive()" placeholder="নগদ জমা (না থাকলে ০)">
-                    
-                    <div class="p-4 rounded-2xl bg-white/5 border border-dashed border-white/10">
-                        <div class="flex justify-between text-sm"><span class="text-gray-400">মোট টাকা:</span> <span id="view-total">৳ ০</span></div>
-                        <div class="flex justify-between text-sm font-bold"><span class="text-gray-400">বাকি:</span> <span id="view-due" class="text-red-400">৳ ০</span></div>
-                    </div>
+        <!-- Navigation Top -->
+        <header class="p-5 flex justify-between items-center sticky top-0 z-30 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+            <div>
+                <h1 class="text-xl font-bold text-white">Harvester <span class="text-green-500">Pro</span></h1>
+                <p class="text-xs text-slate-400">রফিক এন্টারপ্রাইজ</p>
+            </div>
+            <div id="sync-status" class="flex items-center gap-2 px-3 py-1 bg-green-500/10 rounded-full">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-[10px] text-green-500 font-bold uppercase">Offline Ready</span>
+            </div>
+        </header>
 
-                    <button onclick="saveData()" class="w-full btn-primary py-4 rounded-2xl font-bold text-white transition-all active:scale-95">
-                        সেভ করুন
+        <!-- Main Content Viewport -->
+        <main id="view-container" class="p-4 max-w-md mx-auto min-h-screen">
+            <!-- Content Injected Here -->
+        </main>
+
+        <!-- Navigation Bottom -->
+        <nav class="fixed bottom-0 left-0 right-0 z-40 bg-slate-900/90 backdrop-blur-xl border-t border-slate-800 px-6 py-4">
+            <div class="flex justify-between items-center max-w-md mx-auto">
+                <button onclick="router.navigate('home')" class="nav-link flex flex-col items-center gap-1 opacity-50" id="nav-home">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <span class="text-[10px]">হোম</span>
+                </button>
+                <button onclick="router.navigate('customers')" class="nav-link flex flex-col items-center gap-1 opacity-50" id="nav-customers">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <span class="text-[10px]">হিসাব</span>
+                </button>
+                <div class="relative -top-8">
+                    <button onclick="router.navigate('add')" class="w-14 h-14 btn-gradient rounded-full flex items-center justify-center shadow-lg shadow-green-500/40 border-4 border-slate-950">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                     </button>
                 </div>
-            </div>
-
-            <!-- List Filter -->
-            <div class="flex justify-between items-center px-1">
-                <h3 class="font-bold">কাস্টমার তালিকা</h3>
-                <button onclick="toggleDueFilter()" id="filter-btn" class="text-xs glass px-4 py-2 rounded-full border-blue-500/20 text-blue-400">সব কাস্টমার</button>
-            </div>
-
-            <div id="customer-list" class="space-y-3">
-                <!-- Data will appear here -->
-            </div>
-        </section>
-
-        <!-- Tab 3: Reports -->
-        <section id="reports" class="tab-content">
-            <div class="glass p-8 rounded-[30px] text-center space-y-6">
-                <div class="w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center mx-auto">
-                    <span class="text-2xl">📊</span>
-                </div>
-                <h2 class="text-xl font-bold">রিপোর্ট ডাউনলোড</h2>
-                <p class="text-sm text-gray-400">আপনার সকল তথ্য ব্যাকআপ রাখার জন্য ফাইল ডাউনলোড করুন।</p>
-                <button onclick="exportJSON()" class="w-full glass py-4 rounded-2xl font-bold border-white/10 hover:bg-white/5 transition-all">
-                    JSON ব্যাকআপ ফাইল
+                <button onclick="router.navigate('reports')" class="nav-link flex flex-col items-center gap-1 opacity-50" id="nav-reports">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+                    <span class="text-[10px]">রিপোর্ট</span>
+                </button>
+                <button onclick="router.navigate('settings')" class="nav-link flex flex-col items-center gap-1 opacity-50" id="nav-settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                    <span class="text-[10px]">ব্যাকআপ</span>
                 </button>
             </div>
-        </section>
-
+        </nav>
     </div>
 
-    <!-- Bottom Nav -->
-    <nav class="fixed bottom-0 left-0 right-0 glass h-20 rounded-t-3xl border-none flex justify-around items-center px-6 z-50">
-        <button onclick="switchTab('home')" id="tab-home" class="flex flex-col items-center gap-1 text-gray-500 transition-all p-2 rounded-xl">
-            <span>🏠</span>
-            <span class="text-[10px] font-bold">হোম</span>
-        </button>
-        <button onclick="switchTab('customers')" id="tab-customers" class="flex flex-col items-center gap-1 text-gray-500 transition-all p-2 rounded-xl">
-            <span>👥</span>
-            <span class="text-[10px] font-bold">কাস্টমার</span>
-        </button>
-        <button onclick="switchTab('reports')" id="tab-reports" class="flex flex-col items-center gap-1 text-gray-500 transition-all p-2 rounded-xl">
-            <span>📄</span>
-            <span class="text-[10px] font-bold">রিপোর্ট</span>
-        </button>
-    </nav>
-
     <script>
-        let db;
-        let showOnlyDue = false;
+        /**
+         * 💾 DATABASE INITIALIZATION
+         */
+        const db = new Dexie("HarvesterProDB");
+        db.version(1).stores({
+            customers: '++id, name, total_gonda, rate, total_amount, paid_amount, due_amount, date, unit_type'
+        });
 
-        // --- Database Initialize ---
-        const request = indexedDB.open("HarvesterDB", 2);
-        request.onupgradeneeded = (e) => {
-            db = e.target.result;
-            if (!db.objectStoreNames.contains("entries")) {
-                db.createObjectStore("entries", { keyPath: "id", autoIncrement: true });
+        /**
+         * 🧠 CORE LOGIC ENGINE
+         */
+        const Logic = {
+            // Convert to internal units
+            toGonda: (val, type) => {
+                const num = parseFloat(val) || 0;
+                if (type === 'kani') return num * 20;
+                if (type === 'katha') return num * 5;
+                return num;
+            },
+            // Format for display
+            formatLand: (totalGonda) => {
+                const kani = Math.floor(totalGonda / 20);
+                const remaining = totalGonda % 20;
+                const katha = Math.floor(remaining / 5);
+                const gonda = remaining % 5;
+                
+                let result = [];
+                if (kani > 0) result.push(`${kani} কানি`);
+                if (katha > 0) result.push(`${katha} কাঠা`);
+                if (gonda > 0 || result.length === 0) result.push(`${gonda} গন্ডা`);
+                return result.join(' ');
+            },
+            formatCurrency: (num) => `৳${Number(num).toLocaleString('bn-BD')}`,
+            formatDate: (dateStr) => {
+                return new Date(dateStr).toLocaleDateString('bn-BD', {
+                    year: 'numeric', month: 'long', day: 'numeric'
+                });
             }
         };
-        request.onsuccess = (e) => {
-            db = e.target.result;
-            refreshUI();
+
+        /**
+         * 📱 APP STATE & ROUTING
+         */
+        const router = {
+            current: 'home',
+            navigate(view) {
+                this.current = view;
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.add('opacity-50'));
+                const activeNav = document.getElementById(`nav-${view}`);
+                if(activeNav) activeNav.classList.remove('opacity-50');
+                
+                this.render();
+            },
+            async render() {
+                const container = document.getElementById('view-container');
+                gsap.to(container, { opacity: 0, y: 10, duration: 0.2, onComplete: async () => {
+                    switch(this.current) {
+                        case 'home': await Views.home(container); break;
+                        case 'add': Views.add(container); break;
+                        case 'customers': await Views.customers(container); break;
+                        case 'reports': await Views.reports(container); break;
+                        case 'settings': Views.settings(container); break;
+                    }
+                    gsap.to(container, { opacity: 1, y: 0, duration: 0.3 });
+                }});
+            }
         };
 
-        // --- Tabs ---
-        function switchTab(id) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('nav button').forEach(el => el.classList.remove('tab-active'));
-            
-            document.getElementById(id).classList.add('active');
-            document.getElementById('tab-' + id).classList.add('tab-active');
-            
-            gsap.from("#"+id, { opacity: 0, y: 15, duration: 0.4 });
-            refreshUI();
-        }
+        /**
+         * 🎨 UI VIEWS
+         */
+        const Views = {
+            home: async (el) => {
+                const all = await db.customers.toArray();
+                const todayStr = new Date().toISOString().split('T')[0];
+                const today = all.filter(r => r.date === todayStr);
 
-        // --- Logic ---
-        function calculateLive() {
-            const gonda = parseFloat(document.getElementById('cust-gonda').value) || 0;
-            const rate = parseFloat(document.getElementById('cust-rate').value) || 0;
-            const cash = parseFloat(document.getElementById('cust-cash').value) || 0;
-            const total = gonda * rate;
-            const due = total - cash;
+                const stats = {
+                    t_sale: today.reduce((s, r) => s + r.total_amount, 0),
+                    t_paid: today.reduce((s, r) => s + r.paid_amount, 0),
+                    t_due: today.reduce((s, r) => s + r.due_amount, 0),
+                    t_land: Logic.formatLand(today.reduce((s, r) => s + r.total_gonda, 0)),
+                    a_sale: all.reduce((s, r) => s + r.total_amount, 0),
+                    a_paid: all.reduce((s, r) => s + r.paid_amount, 0),
+                    a_due: all.reduce((s, r) => s + r.due_amount, 0),
+                    a_land: Logic.formatLand(all.reduce((s, r) => s + r.total_gonda, 0)),
+                };
 
-            document.getElementById('view-total').innerText = '৳ ' + total.toLocaleString('bn-BD');
-            document.getElementById('view-due').innerText = '৳ ' + due.toLocaleString('bn-BD');
-        }
+                el.innerHTML = `
+                    <div class="space-y-6">
+                        <section>
+                            <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">আজকের হিসাব</h2>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div class="glass-card p-4 rounded-2xl border-l-4 border-green-500">
+                                    <p class="text-[10px] text-slate-400">মোট কাজ</p>
+                                    <h3 class="text-lg font-bold text-white">${Logic.formatCurrency(stats.t_sale)}</h3>
+                                </div>
+                                <div class="glass-card p-4 rounded-2xl border-l-4 border-orange-500">
+                                    <p class="text-[10px] text-slate-400">বাকি</p>
+                                    <h3 class="text-lg font-bold text-white">${Logic.formatCurrency(stats.t_due)}</h3>
+                                </div>
+                                <div class="glass-card p-4 rounded-2xl col-span-2">
+                                    <div class="flex justify-between items-center">
+                                        <p class="text-[10px] text-slate-400 uppercase">আজকের জমির পরিমাণ</p>
+                                        <span class="px-2 py-0.5 bg-green-500/20 text-green-500 text-[10px] rounded">${today.length} টি এন্ট্রি</span>
+                                    </div>
+                                    <h3 class="text-xl font-bold text-green-400 mt-1">${stats.t_land}</h3>
+                                </div>
+                            </div>
+                        </section>
 
-        function saveData() {
-            const name = document.getElementById('cust-name').value;
-            const gonda = parseFloat(document.getElementById('cust-gonda').value) || 0;
-            const rate = parseFloat(document.getElementById('cust-rate').value) || 0;
-            const cash = parseFloat(document.getElementById('cust-cash').value) || 0;
+                        <section>
+                            <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">সর্বমোট রেকর্ড</h2>
+                            <div class="glass-card rounded-3xl overflow-hidden">
+                                <div class="p-5 bg-gradient-to-br from-slate-800 to-slate-900 border-b border-white/5">
+                                    <p class="text-xs text-slate-400">মোট বিক্রয়</p>
+                                    <h1 class="text-3xl font-black text-white mt-1">${Logic.formatCurrency(stats.a_sale)}</h1>
+                                </div>
+                                <div class="p-5 grid grid-cols-2 gap-4">
+                                    <div>
+                                        <p class="text-[10px] text-slate-500 uppercase">মোট আদায়</p>
+                                        <p class="text-sm font-bold text-green-400">${Logic.formatCurrency(stats.a_paid)}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-slate-500 uppercase">মোট বাকি</p>
+                                        <p class="text-sm font-bold text-red-400">${Logic.formatCurrency(stats.a_due)}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
 
-            if(!name || gonda <= 0 || rate <= 0) {
-                alert("দয়া করে সব তথ্য সঠিক দিন");
-                return;
-            }
-
-            const total = gonda * rate;
-            const due = total - cash;
-            const entry = { name, gonda, rate, cash, total, due, date: new Date().toLocaleDateString('bn-BD') };
-
-            const tx = db.transaction("entries", "readwrite");
-            const store = tx.objectStore("entries");
-            store.add(entry);
-
-            tx.oncomplete = () => {
-                resetForm();
-                refreshUI();
-                alert("সংরক্ষণ করা হয়েছে!");
-            };
-        }
-
-        function resetForm() {
-            document.getElementById('cust-name').value = '';
-            document.getElementById('cust-gonda').value = '';
-            document.getElementById('cust-rate').value = '';
-            document.getElementById('cust-cash').value = '';
-            calculateLive();
-        }
-
-        function refreshUI() {
-            if (!db) return;
-            const tx = db.transaction("entries", "readonly");
-            const store = tx.objectStore("entries");
-            const req = store.getAll();
-
-            req.onsuccess = () => {
-                const data = req.result;
-                updateStats(data);
-                renderList(data);
-            };
-        }
-
-        function updateStats(data) {
-            let total = 0, cash = 0, due = 0, gonda = 0;
-            data.forEach(item => {
-                total += item.total;
-                cash += item.cash;
-                due += item.due;
-                gonda += item.gonda;
-            });
-            document.getElementById('stat-total').innerText = total.toLocaleString('bn-BD');
-            document.getElementById('stat-cash').innerText = cash.toLocaleString('bn-BD');
-            document.getElementById('stat-due').innerText = due.toLocaleString('bn-BD');
-            document.getElementById('stat-gonda').innerText = gonda.toLocaleString('bn-BD');
-        }
-
-        function renderList(data) {
-            const container = document.getElementById('customer-list');
-            container.innerHTML = '';
-            
-            let filtered = showOnlyDue ? data.filter(d => d.due > 0) : data;
-
-            filtered.reverse().forEach(item => {
-                const card = document.createElement('div');
-                card.className = "glass p-4 rounded-2xl flex justify-between items-center";
-                card.innerHTML = `
-                    <div>
-                        <p class="font-bold text-white">${item.name}</p>
-                        <p class="text-[10px] text-gray-500">${item.date} • ${item.gonda} গন্ডা</p>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-sm font-bold ${item.due > 0 ? 'text-red-400' : 'text-green-400'}">৳ ${item.due}</p>
-                        <p class="text-[9px] text-gray-500 uppercase tracking-tighter">বাকি টাকা</p>
+                        <section class="glass-card p-4 rounded-2xl">
+                             <h2 class="text-xs font-bold text-slate-400 mb-4">লেনদেন বিশ্লেষণ</h2>
+                             <canvas id="homeChart" height="200"></canvas>
+                        </section>
                     </div>
                 `;
-                container.appendChild(card);
-            });
-        }
+                
+                // Initialize Chart
+                new Chart(document.getElementById('homeChart'), {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['আদায়', 'বাকি'],
+                        datasets: [{
+                            data: [stats.a_paid, stats.a_due],
+                            backgroundColor: ['#22c55e', '#ef4444'],
+                            borderWidth: 0,
+                            hoverOffset: 4
+                        }]
+                    },
+                    options: { plugins: { legend: { display: false } }, cutout: '70%' }
+                });
+            },
 
-        function toggleDueFilter() {
-            showOnlyDue = !showOnlyDue;
-            document.getElementById('filter-btn').innerText = showOnlyDue ? "শুধু বাকি" : "সব কাস্টমার";
-            refreshUI();
-        }
+            add: (el) => {
+                el.innerHTML = `
+                    <div class="space-y-6 pb-10">
+                        <header class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-full bg-green-500/20 flex items-center justify-center text-green-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2a2 2 0 0 0-2 2v5H4a2 2 0 0 0-2 2v2c0 1.1.9 2 2 2h5v5c0 1.1.9 2 2 2h2a2 2 0 0 0 2-2v-5h5a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-5V4a2 2 0 0 0-2-2h-2z"/></svg>
+                            </div>
+                            <h2 class="text-xl font-bold">নতুন হিসাব যোগ করুন</h2>
+                        </header>
 
-        function exportJSON() {
-            const tx = db.transaction("entries", "readonly");
-            const store = tx.objectStore("entries");
-            store.getAll().onsuccess = (e) => {
-                const data = JSON.stringify(e.target.result, null, 2);
-                const blob = new Blob([data], {type: "application/json"});
+                        <form id="addForm" class="space-y-4">
+                            <div class="space-y-1">
+                                <label class="text-xs text-slate-400 ml-1">কাস্টমারের নাম</label>
+                                <input type="text" id="custName" required class="w-full p-4 rounded-xl text-lg font-medium" placeholder="উদা: আব্দুল করিম">
+                            </div>
+
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="setUnit('kani')" id="unit-kani" class="unit-btn p-3 rounded-xl border border-slate-700 bg-slate-800 text-sm">কানি</button>
+                                <button type="button" onclick="setUnit('katha')" id="unit-katha" class="unit-btn p-3 rounded-xl border border-slate-700 bg-slate-800 text-sm">কাঠা</button>
+                                <button type="button" onclick="setUnit('gonda')" id="unit-gonda" class="unit-btn p-3 rounded-xl border border-slate-700 bg-slate-800 text-sm">গন্ডা</button>
+                            </div>
+
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="space-y-1">
+                                    <label class="text-xs text-slate-400 ml-1">পরিমাণ</label>
+                                    <input type="number" step="any" id="qty" required class="w-full p-4 rounded-xl text-lg font-bold" placeholder="0.00">
+                                </div>
+                                <div class="space-y-1">
+                                    <label class="text-xs text-slate-400 ml-1">রেট (৳)</label>
+                                    <input type="number" id="rate" required class="w-full p-4 rounded-xl text-lg font-bold" placeholder="0">
+                                </div>
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-xs text-slate-400 ml-1">নগদ আদায় (৳)</label>
+                                <input type="number" id="paid" required class="w-full p-4 rounded-xl text-lg font-bold text-green-400" placeholder="0">
+                            </div>
+
+                            <div class="space-y-1">
+                                <label class="text-xs text-slate-400 ml-1">তারিখ</label>
+                                <input type="date" id="date" value="${new Date().toISOString().split('T')[0]}" class="w-full p-4 rounded-xl">
+                            </div>
+
+                            <!-- LIVE PREVIEW CARD -->
+                            <div id="previewCard" class="hidden glass-card p-5 rounded-3xl border-2 border-green-500/30 neon-glow">
+                                <h4 class="text-[10px] text-green-500 font-bold uppercase mb-3">Live Preview</h4>
+                                <div class="flex justify-between items-end">
+                                    <div>
+                                        <p id="pName" class="text-xl font-bold text-white"></p>
+                                        <p id="pLand" class="text-sm text-slate-400"></p>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-[10px] text-slate-500">মোট বিল</p>
+                                        <p id="pTotal" class="text-xl font-black text-white"></p>
+                                    </div>
+                                </div>
+                                <div class="mt-4 pt-4 border-t border-white/5 flex justify-between">
+                                    <span class="text-sm text-red-400 font-bold" id="pDue">বাকি: ৳০</span>
+                                    <span class="text-sm text-green-400 font-bold" id="pPaid">নগদ: ৳০</span>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="w-full py-5 rounded-2xl btn-gradient text-white font-bold text-lg shadow-xl shadow-green-900/20 active:scale-95 transition-transform">
+                                রেকর্ড সংরক্ষণ করুন
+                            </button>
+                        </form>
+                    </div>
+                `;
+
+                // Handle Form Logic
+                let selectedUnit = 'kani';
+                const form = document.getElementById('addForm');
+                const updatePreview = () => {
+                    const name = document.getElementById('custName').value || 'কাস্টমারের নাম';
+                    const qty = document.getElementById('qty').value;
+                    const rate = document.getElementById('rate').value;
+                    const paid = document.getElementById('paid').value || 0;
+
+                    if(qty && rate) {
+                        document.getElementById('previewCard').classList.remove('hidden');
+                        const totalGonda = Logic.toGonda(qty, selectedUnit);
+                        const totalAmount = totalGonda * (rate / (selectedUnit === 'kani' ? 20 : selectedUnit === 'katha' ? 5 : 1));
+                        const due = totalAmount - paid;
+
+                        document.getElementById('pName').innerText = name;
+                        document.getElementById('pLand').innerText = Logic.formatLand(totalGonda);
+                        document.getElementById('pTotal').innerText = Logic.formatCurrency(totalAmount);
+                        document.getElementById('pPaid').innerText = `নগদ: ${Logic.formatCurrency(paid)}`;
+                        document.getElementById('pDue').innerText = `বাকি: ${Logic.formatCurrency(due)}`;
+                    }
+                };
+
+                window.setUnit = (u) => {
+                    selectedUnit = u;
+                    document.querySelectorAll('.unit-btn').forEach(b => b.classList.remove('bg-green-600', 'border-green-500'));
+                    document.getElementById(`unit-${u}`).classList.add('bg-green-600', 'border-green-500');
+                    updatePreview();
+                };
+                setUnit('kani');
+
+                form.addEventListener('input', updatePreview);
+                form.onsubmit = async (e) => {
+                    e.preventDefault();
+                    const qty = document.getElementById('qty').value;
+                    const rate = parseFloat(document.getElementById('rate').value);
+                    const totalGonda = Logic.toGonda(qty, selectedUnit);
+                    
+                    // Specific Rate Adjustment based on unit typed
+                    const unitFactor = selectedUnit === 'kani' ? 20 : selectedUnit === 'katha' ? 5 : 1;
+                    const finalTotal = (totalGonda / unitFactor) * rate;
+
+                    const entry = {
+                        name: document.getElementById('custName').value,
+                        unit_type: selectedUnit,
+                        qty: parseFloat(qty),
+                        total_gonda: totalGonda,
+                        rate: rate,
+                        total_amount: finalTotal,
+                        paid_amount: parseFloat(document.getElementById('paid').value || 0),
+                        due_amount: finalTotal - parseFloat(document.getElementById('paid').value || 0),
+                        date: document.getElementById('date').value
+                    };
+
+                    await db.customers.add(entry);
+                    alert('সফলভাবে সংরক্ষিত হয়েছে!');
+                    router.navigate('customers');
+                };
+            },
+
+            customers: async (el) => {
+                let data = await db.customers.reverse().toArray();
+                let bakiFilter = false;
+
+                const renderList = (items) => {
+                    const listHtml = items.map(r => `
+                        <div class="glass-card p-4 rounded-2xl relative overflow-hidden group">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <h3 class="font-bold text-lg">${r.name}</h3>
+                                    <p class="text-xs text-slate-400">${Logic.formatDate(r.date)}</p>
+                                </div>
+                                <div class="text-right">
+                                    <span class="text-[10px] bg-slate-700 px-2 py-1 rounded text-slate-300">${Logic.formatLand(r.total_gonda)}</span>
+                                    <p class="mt-2 font-black text-lg">${Logic.formatCurrency(r.total_amount)}</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex justify-between items-center border-t border-white/5 pt-3">
+                                <div class="flex gap-4">
+                                    <div>
+                                        <p class="text-[10px] text-slate-500">নগদ</p>
+                                        <p class="text-sm text-green-500 font-bold">${Logic.formatCurrency(r.paid_amount)}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-slate-500">বাকি</p>
+                                        <p class="text-sm ${r.due_amount > 0 ? 'text-red-500' : 'text-slate-500'} font-bold">${Logic.formatCurrency(r.due_amount)}</p>
+                                    </div>
+                                </div>
+                                <button onclick="deleteEntry(${r.id})" class="opacity-0 group-hover:opacity-100 p-2 text-red-500 transition-opacity">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                                </button>
+                            </div>
+                        </div>
+                    `).join('');
+                    document.getElementById('customer-list').innerHTML = listHtml || '<p class="text-center text-slate-500 py-10">কোন রেকর্ড পাওয়া যায়নি</p>';
+                };
+
+                el.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex gap-2">
+                            <div class="relative flex-1">
+                                <input type="text" id="search" placeholder="নাম দিয়ে খুঁজুন..." class="w-full pl-10 pr-4 py-3 rounded-xl">
+                                <svg class="absolute left-3 top-3.5 text-slate-500" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            </div>
+                            <button id="bakiBtn" class="px-4 bg-slate-800 rounded-xl border border-slate-700 text-sm font-bold transition-all">বাকি</button>
+                        </div>
+                        <div id="customer-list" class="space-y-3 pb-20"></div>
+                    </div>
+                `;
+
+                renderList(data);
+
+                document.getElementById('search').addEventListener('input', (e) => {
+                    const term = e.target.value.toLowerCase();
+                    const filtered = data.filter(r => r.name.toLowerCase().includes(term));
+                    renderList(filtered);
+                });
+
+                document.getElementById('bakiBtn').addEventListener('click', (e) => {
+                    bakiFilter = !bakiFilter;
+                    if(bakiFilter) {
+                        e.target.classList.replace('bg-slate-800', 'bg-red-500/20');
+                        e.target.classList.add('text-red-500', 'border-red-500/50');
+                        renderList(data.filter(r => r.due_amount > 0));
+                    } else {
+                        e.target.className = "px-4 bg-slate-800 rounded-xl border border-slate-700 text-sm font-bold transition-all";
+                        renderList(data);
+                    }
+                });
+
+                window.deleteEntry = async (id) => {
+                    if(confirm('আপনি কি এই রেকর্ডটি মুছে ফেলতে চান?')) {
+                        await db.customers.delete(id);
+                        Views.customers(el);
+                    }
+                };
+            },
+
+            reports: async (el) => {
+                const data = await db.customers.toArray();
+                el.innerHTML = `
+                    <div class="space-y-6">
+                        <h2 class="text-xl font-bold">রিপোর্ট এবং এক্সপোর্ট</h2>
+                        
+                        <div class="grid grid-cols-1 gap-4">
+                            <button onclick="ExportLogic.pdf()" class="p-6 glass-card rounded-3xl flex items-center justify-between group active:scale-95 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-red-500/20 flex items-center justify-center text-red-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                                    </div>
+                                    <div class="text-left">
+                                        <h3 class="font-bold text-lg text-white">PDF রিপোর্ট</h3>
+                                        <p class="text-xs text-slate-400">প্রিন্ট করার জন্য উপযোগী</p>
+                                    </div>
+                                </div>
+                                <svg class="text-slate-600 group-hover:text-white transition-colors" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                            </button>
+
+                            <button onclick="ExportLogic.excel()" class="p-6 glass-card rounded-3xl flex items-center justify-between group active:scale-95 transition-all">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-2xl bg-green-500/20 flex items-center justify-center text-green-500">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="18" height="18" x="3" y="3" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="3" y1="15" x2="21" y2="15"/><line x1="9" y1="3" x2="9" y2="21"/><line x1="15" y1="3" x2="15" y2="21"/></svg>
+                                    </div>
+                                    <div class="text-left">
+                                        <h3 class="font-bold text-lg text-white">Excel ফাইল</h3>
+                                        <p class="text-xs text-slate-400">হিসাব সংরক্ষণের জন্য</p>
+                                    </div>
+                                </div>
+                                <svg class="text-slate-600 group-hover:text-white transition-colors" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            },
+            
+            settings: (el) => {
+                el.innerHTML = `
+                    <div class="space-y-6">
+                        <h2 class="text-xl font-bold">সেটিংস ও ব্যাকআপ</h2>
+                        <div class="glass-card p-6 rounded-3xl space-y-4">
+                            <p class="text-sm text-slate-400">আপনার ডাটা বর্তমানে আপনার ফোনের মেমোরিতে (IndexedDB) সংরক্ষিত আছে।</p>
+                            <button onclick="ExportLogic.backup()" class="w-full py-4 bg-slate-700 rounded-xl font-bold">ডাটা ব্যাকআপ নিন (JSON)</button>
+                            <label class="block w-full py-4 bg-slate-800 rounded-xl font-bold text-center cursor-pointer border border-dashed border-slate-600">
+                                ডাটা রিস্টোর করুন
+                                <input type="file" class="hidden" onchange="ExportLogic.restore(this)">
+                            </label>
+                        </div>
+                    </div>
+                `;
+            }
+        };
+
+        /**
+         * 📊 EXPORT LOGIC
+         */
+        const ExportLogic = {
+            async pdf() {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                const data = await db.customers.toArray();
+                
+                doc.setFontSize(20);
+                doc.text("HARVESTER PRO - Rafiq Enterprise", 10, 20);
+                doc.setFontSize(10);
+                doc.text("Sales Report | Date: " + new Date().toLocaleDateString(), 10, 30);
+                
+                let y = 50;
+                doc.text("Name", 10, y);
+                doc.text("Land", 60, y);
+                doc.text("Total", 100, y);
+                doc.text("Due", 140, y);
+                
+                doc.line(10, y+2, 200, y+2);
+                y += 10;
+
+                data.forEach(r => {
+                    doc.text(r.name, 10, y);
+                    doc.text(Logic.formatLand(r.total_gonda), 60, y);
+                    doc.text(r.total_amount.toString(), 100, y);
+                    doc.text(r.due_amount.toString(), 140, y);
+                    y += 7;
+                });
+                
+                doc.save(`Harvester_Report_${Date.now()}.pdf`);
+            },
+            async excel() {
+                const data = await db.customers.toArray();
+                const ws = XLSX.utils.json_to_sheet(data.map(r => ({
+                    'নাম': r.name,
+                    'জমির পরিমাণ': Logic.formatLand(r.total_gonda),
+                    'রেট': r.rate,
+                    'মোট টাকা': r.total_amount,
+                    'আদায়': r.paid_amount,
+                    'বাকি': r.due_amount,
+                    'তারিখ': r.date
+                })));
+                const wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, ws, "Sales");
+                XLSX.writeFile(wb, `Harvester_Data_${Date.now()}.xlsx`);
+            },
+            async backup() {
+                const data = await db.customers.toArray();
+                const blob = new Blob([JSON.stringify(data)], {type: "application/json"});
                 const url = URL.createObjectURL(blob);
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `Harvester_Backup_${new Date().toLocaleDateString()}.json`;
+                a.download = `harvester_backup_${Date.now()}.json`;
                 a.click();
-            };
-        }
+            },
+            restore(input) {
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = async (e) => {
+                    const data = JSON.parse(e.target.result);
+                    await db.customers.bulkAdd(data);
+                    alert('ডাটা রিস্টোর সম্পন্ন হয়েছে!');
+                    router.navigate('home');
+                };
+                reader.readAsText(file);
+            }
+        };
 
-        // Init Tab
-        switchTab('home');
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(() => {
+                document.getElementById('loader').style.display = 'none';
+                router.navigate('home');
+            }, 1500);
+        });
     </script>
 </body>
 </html>
