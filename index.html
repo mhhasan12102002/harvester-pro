@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-  <title>হারভেস্টার প্রো - রফিক এন্টারপ্রাইজ</title>
+  <title>হারভেস্টার প্রো - রফিক এন্টারপ্রাইজ | পেশাদার ধান কাটা ব্যবস্থাপনা</title>
   <!-- Tailwind + Fonts + Libraries -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -14,303 +14,362 @@
   <script src="https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.min.js"></script>
   <style>
     * {
-      font-family: 'Noto Sans Bengali', 'Hind Siliguri', system-ui, sans-serif;
+      font-family: 'Noto Sans Bengali', 'Inter', system-ui, sans-serif;
     }
     body {
-      background: radial-gradient(circle at 10% 20%, rgba(0,20,30,1) 0%, rgba(0,0,0,1) 100%);
+      background: radial-gradient(ellipse at 20% 30%, #0a0f1a 0%, #03060c 100%);
       min-height: 100vh;
-      padding-bottom: 80px;
+      padding-bottom: 90px;
     }
-    /* Glassmorphism card */
-    .glass-card {
-      background: rgba(15, 25, 35, 0.65);
+    /* Glassmorphism Premium */
+    .glass-premium {
+      background: rgba(12, 20, 28, 0.65);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(0, 255, 255, 0.25);
+      border-radius: 2rem;
+      box-shadow: 0 20px 40px -12px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,255,255,0.1);
+    }
+    .glass-card-enhanced {
+      background: rgba(8, 18, 24, 0.7);
       backdrop-filter: blur(12px);
+      border-radius: 1.75rem;
       border: 1px solid rgba(0, 255, 255, 0.2);
-      border-radius: 32px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,255,255,0.1);
-    }
-    .neon-glow {
-      box-shadow: 0 0 8px rgba(0, 255, 255, 0.6), 0 0 2px rgba(0,255,255,0.8);
-    }
-    .btn-primary {
-      background: linear-gradient(135deg, #00c6ff, #0072ff);
-      border: none;
       transition: all 0.2s ease;
+      box-shadow: 0 8px 20px -6px rgba(0,0,0,0.5);
     }
-    .btn-primary:active {
+    .metric-card {
+      background: linear-gradient(135deg, rgba(0,40,50,0.7), rgba(0,20,30,0.8));
+      backdrop-filter: blur(12px);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(0,255,255,0.3);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .metric-card:active {
       transform: scale(0.97);
     }
-    input, select, textarea {
+    .unit-toggle {
       background: rgba(0,0,0,0.5);
       border: 1px solid rgba(0,255,255,0.4);
-      border-radius: 20px;
-      padding: 12px 16px;
-      color: white;
-    }
-    input:focus, select:focus {
-      outline: none;
-      border-color: #00ffff;
-      box-shadow: 0 0 8px cyan;
-    }
-    .glass-tab {
-      background: rgba(0,0,0,0.5);
-      backdrop-filter: blur(8px);
-      border-radius: 40px;
-    }
-    .customer-card {
-      background: rgba(10,20,30,0.7);
-      backdrop-filter: blur(4px);
-      border-left: 4px solid #00ffff;
+      border-radius: 2rem;
       transition: all 0.2s;
     }
-    .customer-card:active {
+    .unit-btn-active {
+      background: linear-gradient(95deg, #00c6ff, #0072ff);
+      color: white;
+      border: none;
+      box-shadow: 0 0 12px rgba(0,198,255,0.6);
+    }
+    .unit-btn {
+      padding: 10px 0;
+      border-radius: 2rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    input, select, textarea {
+      background: rgba(5, 15, 22, 0.8);
+      border: 1px solid rgba(0,255,255,0.4);
+      border-radius: 1.5rem;
+      padding: 12px 18px;
+      color: white;
+      font-size: 0.95rem;
+    }
+    input:focus {
+      outline: none;
+      border-color: #0ff;
+      box-shadow: 0 0 16px rgba(0,255,255,0.3);
+    }
+    .preview-card {
+      background: linear-gradient(145deg, #0b1820, #051015);
+      border-radius: 1.5rem;
+      border-left: 4px solid #0ff;
+    }
+    .customer-card-premium {
+      background: rgba(10, 22, 30, 0.75);
+      backdrop-filter: blur(8px);
+      border-radius: 1.5rem;
+      border: 1px solid rgba(0,255,255,0.2);
+      transition: all 0.2s;
+    }
+    .customer-card-premium:active {
       transform: scale(0.98);
     }
-    /* mobile optimized scroll */
-    ::-webkit-scrollbar {
-      width: 4px;
+    .glow-text {
+      text-shadow: 0 0 5px cyan;
     }
-    ::-webkit-scrollbar-track {
-      background: #0a1922;
+    @keyframes floatPulse {
+      0% { opacity: 0.6; transform: translateY(0px);}
+      100% { opacity: 1; transform: translateY(-3px);}
     }
-    ::-webkit-scrollbar-thumb {
-      background: cyan;
-      border-radius: 10px;
-    }
-    .animate-pulse-glow {
-      animation: glowPulse 1.2s ease-out;
-    }
-    @keyframes glowPulse {
-      0% { text-shadow: 0 0 0px cyan; opacity: 1;}
-      50% { text-shadow: 0 0 12px cyan; background: rgba(0,255,255,0.2);}
-      100% { text-shadow: 0 0 0px cyan; }
+    .animate-float {
+      animation: floatPulse 2s infinite alternate;
     }
   </style>
 </head>
 <body class="text-white">
 
-<div id="app" class="max-w-md mx-auto px-4 py-5 space-y-5">
-  <!-- Header Section -->
-  <div class="flex justify-between items-center">
+<div id="app" class="max-w-md mx-auto px-4 py-5 space-y-5 relative z-10">
+  
+  <!-- Header premium -->
+  <div class="flex justify-between items-center glass-premium px-5 py-3">
     <div>
-      <h1 class="text-2xl font-bold tracking-tight bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent">হারভেস্টার প্রো</h1>
-      <p class="text-sm text-cyan-200/70">রফিক এন্টারপ্রাইজ</p>
+      <h1 class="text-2xl font-bold bg-gradient-to-r from-cyan-300 to-blue-400 bg-clip-text text-transparent tracking-tight">হারভেস্টার প্রো</h1>
+      <p class="text-xs text-cyan-200/80">রফিক এন্টারপ্রাইজ · ধান কাটা ব্যবস্থা</p>
     </div>
-    <div class="glass-card px-3 py-1 text-xs font-mono">🚜 ধান কাটা</div>
+    <div class="bg-cyan-900/30 rounded-full p-2 border border-cyan-400/40">
+      <span class="text-xl">🚜</span>
+    </div>
   </div>
 
-  <!-- Dashboard Summary Cards (Real-time) -->
+  <!-- Dashboard Metric Grid 2x2 -->
   <div class="grid grid-cols-2 gap-3">
-    <div class="glass-card p-3 text-center">
-      <div class="text-xs text-cyan-300">আজকের বিক্রি</div>
-      <div class="text-xl font-bold" id="todaySales">৳ ০</div>
+    <div class="metric-card p-3 text-center">
+      <div class="text-xs text-cyan-300 tracking-wide">আজকের বিক্রি</div>
+      <div class="text-2xl font-bold" id="todaySales">৳ ০</div>
     </div>
-    <div class="glass-card p-3 text-center">
+    <div class="metric-card p-3 text-center">
       <div class="text-xs text-cyan-300">আজকের নগদ</div>
-      <div class="text-xl font-bold" id="todayCash">৳ ০</div>
+      <div class="text-2xl font-bold" id="todayCash">৳ ০</div>
     </div>
-    <div class="glass-card p-3 text-center">
+    <div class="metric-card p-3 text-center">
       <div class="text-xs text-cyan-300">আজকের বাকি</div>
-      <div class="text-xl font-bold" id="todayDue">৳ ০</div>
+      <div class="text-2xl font-bold" id="todayDue">৳ ০</div>
     </div>
-    <div class="glass-card p-3 text-center">
+    <div class="metric-card p-3 text-center relative overflow-hidden">
       <div class="text-xs text-cyan-300">আজকের জমি</div>
-      <div class="text-sm font-bold" id="todayLand">০ কানি</div>
+      <div class="text-md font-bold leading-tight" id="todayLandReadable">০ কানি</div>
+      <div class="text-[10px] text-gray-400" id="todayLandGonda">(০ গন্ডা)</div>
     </div>
   </div>
 
-  <div class="grid grid-cols-3 gap-2">
-    <div class="glass-card p-2 text-center text-xs"><span class="text-cyan-200">মোট বিক্রি</span><br><span id="totalSalesAll">৳০</span></div>
-    <div class="glass-card p-2 text-center text-xs"><span class="text-cyan-200">মোট বাকি</span><br><span id="totalDueAll">৳০</span></div>
-    <div class="glass-card p-2 text-center text-xs"><span class="text-cyan-200">মোট সংগ্রহ</span><br><span id="totalCollectedAll">৳০</span></div>
+  <!-- extra summaries -->
+  <div class="grid grid-cols-3 gap-2 glass-card-enhanced p-2">
+    <div class="text-center text-xs"><span class="text-cyan-300">সর্বমোট বিক্রি</span><br><span class="font-bold" id="totalSalesAll">৳০</span></div>
+    <div class="text-center text-xs"><span class="text-cyan-300">মোট বাকি</span><br><span class="font-bold text-rose-300" id="totalDueAll">৳০</span></div>
+    <div class="text-center text-xs"><span class="text-cyan-300">মোট নগদ</span><br><span class="font-bold text-emerald-300" id="totalCollectedAll">৳০</span></div>
   </div>
 
-  <!-- Tabs Navigation -->
-  <div class="flex gap-2 glass-tab p-1 rounded-full">
-    <button data-tab="entry" class="tab-btn flex-1 py-2 rounded-full text-sm font-medium transition-all">➕ এন্ট্রি</button>
-    <button data-tab="customers" class="tab-btn flex-1 py-2 rounded-full text-sm font-medium transition-all">👥 গ্রাহক</button>
-    <button data-tab="reports" class="tab-btn flex-1 py-2 rounded-full text-sm font-medium transition-all">📊 রিপোর্ট</button>
-    <button data-tab="analytics" class="tab-btn flex-1 py-2 rounded-full text-sm font-medium transition-all">📈 বিশ্লেষণ</button>
+  <!-- Tabs Premium -->
+  <div class="flex gap-2 bg-black/30 backdrop-blur-xl p-1 rounded-full border border-white/10">
+    <button data-tab="entry" class="tab-btn flex-1 py-2.5 rounded-full text-sm font-semibold transition-all">➕ এন্ট্রি</button>
+    <button data-tab="customers" class="tab-btn flex-1 py-2.5 rounded-full text-sm font-semibold transition-all">👥 গ্রাহক</button>
+    <button data-tab="reports" class="tab-btn flex-1 py-2.5 rounded-full text-sm font-semibold transition-all">📊 রিপোর্ট</button>
+    <button data-tab="analytics" class="tab-btn flex-1 py-2.5 rounded-full text-sm font-semibold transition-all">📈 বিশ্লেষণ</button>
   </div>
 
-  <!-- ENTRY FORM TAB -->
-  <div id="entryTab" class="tab-content glass-card p-4 space-y-4">
-    <div class="space-y-3">
-      <input type="text" id="customerName" placeholder="গ্রাহকের নাম *" class="w-full text-sm">
-      <select id="landType" class="w-full text-sm">
-        <option value="গন্ডা">গন্ডা</option>
-        <option value="কাঠা">কাঠা</option>
-        <option value="কানি">কানি</option>
-      </select>
-      <div class="flex gap-2">
-        <input type="number" id="quantity" placeholder="পরিমাণ *" class="w-1/2 text-sm" step="any">
-        <input type="number" id="rate" placeholder="রেট (৳)" class="w-1/2 text-sm" step="any">
+  <!-- ENTRY TAB with unit toggle & live preview -->
+  <div id="entryTab" class="tab-content glass-premium p-5 space-y-5">
+    <input type="text" id="customerName" placeholder="গ্রাহকের নাম *" class="w-full">
+    
+    <!-- Unit Toggle Buttons -->
+    <div class="space-y-2">
+      <label class="text-xs text-cyan-300">জমির একক নির্বাচন</label>
+      <div class="unit-toggle grid grid-cols-3 gap-1 p-1">
+        <button data-unit="গন্ডা" class="unit-btn rounded-full text-sm font-medium transition-all">গন্ডা</button>
+        <button data-unit="কাঠা" class="unit-btn rounded-full text-sm font-medium transition-all">কাঠা</button>
+        <button data-unit="কানি" class="unit-btn rounded-full text-sm font-medium transition-all">কানি</button>
       </div>
-      <div class="flex gap-2">
-        <input type="number" id="cashPaid" placeholder="নগদ (টাকা)" class="w-1/2 text-sm" step="any">
-        <input type="text" id="comment" placeholder="মন্তব্য (ঐচ্ছিক)" class="w-1/2 text-sm">
-      </div>
-      <input type="date" id="entryDate" class="w-full text-sm">
-      <!-- live preview -->
-      <div class="bg-black/40 rounded-2xl p-3 border border-cyan-500/30">
-        <div class="flex justify-between text-xs"><span>মোট টাকা:</span><span id="liveTotal" class="font-bold text-cyan-300">৳ ০</span></div>
-        <div class="flex justify-between text-xs"><span>নগদ:</span><span id="liveCashPreview">৳ ০</span></div>
-        <div class="flex justify-between text-xs"><span>বাকি থাকল:</span><span id="liveDuePreview" class="text-rose-300">৳ ০</span></div>
-      </div>
-      <button id="saveEntryBtn" class="btn-primary w-full py-3 rounded-2xl font-bold text-white shadow-lg">💾 সংরক্ষণ করুন</button>
     </div>
+    
+    <div class="flex gap-3">
+      <input type="number" id="quantityInput" placeholder="পরিমাণ" class="w-1/2" step="any">
+      <input type="number" id="rateInput" placeholder="রেট (৳)" class="w-1/2" step="any">
+    </div>
+    <div class="flex gap-3">
+      <input type="number" id="cashPaidInput" placeholder="নগদ (টাকা)" class="w-1/2" step="any">
+      <input type="text" id="commentInput" placeholder="মন্তব্য" class="w-1/2">
+    </div>
+    <input type="date" id="entryDateInput" class="w-full">
+    
+    <!-- LIVE PREVIEW CARD (enhanced) -->
+    <div class="preview-card p-4 space-y-2">
+      <div class="text-xs text-cyan-300 flex justify-between"><span>📋 লাইভ প্রিভিউ</span><span id="liveUnitInfo"></span></div>
+      <div class="text-sm font-bold" id="previewName">নাম: —</div>
+      <div class="text-sm" id="previewLandFormatted">জমি: —</div>
+      <div class="flex justify-between text-sm"><span>মোট:</span><span id="liveTotalAmount" class="font-bold text-cyan-300">৳ ০</span></div>
+      <div class="flex justify-between text-sm"><span>নগদ:</span><span id="liveCashAmount">৳ ০</span></div>
+      <div class="flex justify-between text-sm"><span class="text-rose-300">বাকি:</span><span id="liveDueAmount" class="text-rose-300">৳ ০</span></div>
+    </div>
+    
+    <button id="saveEntryBtn" class="w-full bg-gradient-to-r from-cyan-500 to-blue-600 py-3.5 rounded-2xl font-bold text-white shadow-xl transition-all active:scale-95">💾 সংরক্ষণ করুন</button>
   </div>
 
   <!-- CUSTOMERS TAB -->
-  <div id="customersTab" class="tab-content hidden glass-card p-4 space-y-4">
+  <div id="customersTab" class="tab-content hidden glass-premium p-4 space-y-4">
     <div class="flex justify-between items-center">
-      <button id="bakiToggleBtn" class="bg-cyan-800/50 px-4 py-2 rounded-full text-sm border border-cyan-400">🔘 শুধু বাকি দেখুন</button>
+      <button id="bakiToggleBtn" class="bg-cyan-800/40 px-4 py-2 rounded-full text-sm border border-cyan-400 backdrop-blur-sm">🔘 শুধু বাকি</button>
       <span id="filterStatus" class="text-xs text-cyan-300">সব গ্রাহক</span>
     </div>
-    <div id="customersListContainer" class="max-h-[450px] overflow-y-auto space-y-3"></div>
+    <div id="customersListContainer" class="max-h-[500px] overflow-y-auto space-y-3 pb-2"></div>
   </div>
 
   <!-- REPORTS TAB -->
-  <div id="reportsTab" class="tab-content hidden glass-card p-4 space-y-5">
-    <button id="exportExcelBtn" class="bg-emerald-700 w-full py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold">📎 এক্সেল রিপোর্ট</button>
-    <button id="exportJpgBtn" class="bg-blue-800 w-full py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold">🖼 জেপিজি রিপোর্ট</button>
-    <button id="exportPdfBtn" class="bg-red-800 w-full py-3 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold">📄 পিডিএফ রিপোর্ট</button>
-    <div class="text-center text-xs text-gray-400">প্রফেশনাল ফিন্যান্সিয়াল রিপোর্ট</div>
+  <div id="reportsTab" class="tab-content hidden glass-premium p-5 space-y-5">
+    <button id="exportExcelBtn" class="bg-emerald-700/80 w-full py-3 rounded-xl flex items-center justify-center gap-2 font-semibold backdrop-blur-sm text-white">📎 এক্সেল রিপোর্ট (xlsx)</button>
+    <button id="exportJpgBtn" class="bg-blue-700/80 w-full py-3 rounded-xl flex items-center justify-center gap-2 font-semibold">🖼 জেপিজি স্টেটমেন্ট</button>
+    <button id="exportPdfBtn" class="bg-red-700/80 w-full py-3 rounded-xl flex items-center justify-center gap-2 font-semibold">📄 পিডিএফ প্রফেশনাল</button>
+    <div class="text-center text-xs text-gray-300">প্রিমিয়াম ফিন্যান্সিয়াল রিপোর্ট</div>
   </div>
 
-  <!-- ANALYTICS CHARTS TAB -->
-  <div id="analyticsTab" class="tab-content hidden glass-card p-4 space-y-6">
-    <canvas id="dailyTrendChart" height="150" class="w-full"></canvas>
-    <canvas id="dueVsPaidChart" height="150" class="w-full"></canvas>
-    <canvas id="landDistributionChart" height="150" class="w-full"></canvas>
+  <!-- ANALYTICS TAB -->
+  <div id="analyticsTab" class="tab-content hidden glass-premium p-4 space-y-6">
+    <canvas id="dailyTrendChart" height="140"></canvas>
+    <canvas id="dueVsPaidChart" height="140"></canvas>
+    <canvas id="landDistributionChart" height="140"></canvas>
   </div>
 
-  <!-- Modal for customer details -->
-  <div id="customerModal" class="fixed inset-0 bg-black/70 backdrop-blur-md flex items-center justify-center z-50 hidden transition-all" style="padding: 1rem;">
-    <div class="glass-card w-full max-w-sm p-5 space-y-3">
-      <h3 class="text-xl font-bold" id="modalName"></h3>
+  <!-- Modal detail -->
+  <div id="customerModal" class="fixed inset-0 bg-black/80 backdrop-blur-xl flex items-center justify-center z-50 hidden p-4">
+    <div class="glass-premium w-full max-w-sm p-5 space-y-3">
+      <h3 class="text-xl font-bold text-cyan-300" id="modalName"></h3>
       <div class="border-t border-cyan-500/30 pt-2 space-y-2 text-sm">
-        <p>জমির ধরন: <span id="modalLandType"></span></p>
-        <p>পরিমাণ: <span id="modalAmount"></span></p>
-        <p>মোট টাকা: <span id="modalTotal">৳</span></p>
-        <p>নগদ: <span id="modalCash">৳</span></p>
+        <p><span class="text-gray-300">জমি:</span> <span id="modalLandDisplay"></span></p>
+        <p><span class="text-gray-300">মোট:</span> <span id="modalTotal">৳</span></p>
+        <p><span class="text-gray-300">নগদ:</span> <span id="modalCash">৳</span></p>
         <p class="text-rose-300">বাকি: <span id="modalDue">৳</span></p>
-        <p>মন্তব্য: <span id="modalComment"></span></p>
-        <p>তারিখ: <span id="modalDate"></span></p>
+        <p><span class="text-gray-300">মন্তব্য:</span> <span id="modalComment"></span></p>
+        <p><span class="text-gray-300">তারিখ:</span> <span id="modalDate"></span></p>
       </div>
-      <button id="closeModalBtn" class="btn-primary w-full py-2 rounded-xl">বন্ধ করুন</button>
+      <button id="closeModalBtn" class="w-full bg-cyan-700 py-2 rounded-xl">বন্ধ করুন</button>
     </div>
   </div>
 </div>
 
 <script>
-  // ---------- IndexedDB Setup ----------
+  // ---------- GLOBAL ----------
   const DB_NAME = "HarvesterProDB";
   const STORE_NAME = "transactions";
   let db = null;
+  let currentUnit = "গন্ডা"; // গন্ডা, কাঠা, কানি
+  let showOnlyDue = false;
+  let charts = { daily: null, duePaid: null, landDist: null };
 
-  function openDB() {
-    return new Promise((resolve, reject) => {
-      const request = indexedDB.open(DB_NAME, 2);
-      request.onerror = () => reject(request.error);
-      request.onsuccess = () => { db = request.result; resolve(db); };
-      request.onupgradeneeded = (event) => {
-        const database = event.target.result;
-        if (!database.objectStoreNames.contains(STORE_NAME)) {
-          const store = database.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true });
-          store.createIndex("date", "date", { unique: false });
-          store.createIndex("name", "name", { unique: false });
-        }
-      };
-    });
-  }
-
-  async function getAllRecords() {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, "readonly");
-      const store = tx.objectStore(STORE_NAME);
-      const request = store.getAll();
-      request.onsuccess = () => resolve(request.result || []);
-      request.onerror = () => reject(request.error);
-    });
-  }
-
-  async function saveRecord(record) {
-    return new Promise((resolve, reject) => {
-      const tx = db.transaction(STORE_NAME, "readwrite");
-      const store = tx.objectStore(STORE_NAME);
-      const req = store.add(record);
-      req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
-    });
-  }
-
-  // Land conversion helpers (internal normalization: store in kani base for summary, but show raw)
-  function toKani(quantity, landType) {
-    let val = parseFloat(quantity) || 0;
-    if (landType === "গন্ডা") return val / 20;
-    if (landType === "কাঠা") return val / 5;
-    if (landType === "কানি") return val;
+  // Helper: convert any unit to total Gonda (internal base)
+  function toGonda(quantity, unit) {
+    let q = parseFloat(quantity) || 0;
+    if (unit === "গন্ডা") return q;
+    if (unit === "কাঠা") return q * 5;
+    if (unit === "কানি") return q * 20;
     return 0;
   }
 
-  // UI update all dashboards & charts
-  let chartDaily, chartDuePaid, chartLandDist;
+  // Format Gonda to readable "X কানি Y কাঠা Z গন্ডা"
+  function formatLandFromGonda(totalGonda) {
+    let gondaTotal = Math.round(totalGonda * 100) / 100;
+    let gondaInt = Math.floor(gondaTotal);
+    let kani = Math.floor(gondaInt / 20);
+    let rem = gondaInt % 20;
+    let katha = Math.floor(rem / 5);
+    let gonda = rem % 5;
+    let parts = [];
+    if (kani > 0) parts.push(`${kani} কানি`);
+    if (katha > 0) parts.push(`${katha} কাঠা`);
+    if (gonda > 0 || (kani === 0 && katha === 0)) parts.push(`${gonda} গন্ডা`);
+    let formatted = parts.join(" ");
+    return { formatted, totalGonda: gondaInt };
+  }
 
+  // IndexedDB
+  function openDB() { return new Promise((resolve, reject) => { const req = indexedDB.open(DB_NAME, 3); req.onerror = () => reject(req.error); req.onsuccess = () => { db = req.result; resolve(db); }; req.onupgradeneeded = (e) => { const db_ = e.target.result; if (!db_.objectStoreNames.contains(STORE_NAME)) db_.createObjectStore(STORE_NAME, { keyPath: "id", autoIncrement: true }); }; }); }
+  async function getAllRecords() { return new Promise((res) => { const tx = db.transaction(STORE_NAME, "readonly"); res(tx.objectStore(STORE_NAME).getAll().onsuccess = (e) => res(e.target.result || [])); }); }
+  async function saveRecord(record) { return new Promise((res, rej) => { const tx = db.transaction(STORE_NAME, "readwrite"); const req = tx.objectStore(STORE_NAME).add(record); req.onsuccess = () => res(req.result); req.onerror = () => rej(req.error); }); }
+
+  // Live preview calculation
+  function updateLivePreviewUI() {
+    const name = document.getElementById("customerName").value || "গ্রাহক";
+    let rawQty = parseFloat(document.getElementById("quantityInput").value) || 0;
+    const rate = parseFloat(document.getElementById("rateInput").value) || 0;
+    const cash = parseFloat(document.getElementById("cashPaidInput").value) || 0;
+    let totalGonda = toGonda(rawQty, currentUnit);
+    let totalAmount = totalGonda * rate; // রেট per গন্ডা logic: as per requirement keeping consistent: total = পরিমাণ * রেট (interpretation: Rate is per base unit, but for display: we keep direct multiplication)
+    // But to match realistic business: we use same as before: total = (পরিমাণ input numeric) * rate. For conversion display only for land.
+    // Original formula: total = quantity * rate (independent of type). For consistency: we keep total = rawQty * rate for financial consistency.
+    // But the requirement wants land human format: so we compute amount same as user expectation
+    totalAmount = rawQty * rate;
+    const due = totalAmount - cash;
+    const landFormat = formatLandFromGonda(toGonda(rawQty, currentUnit));
+    document.getElementById("previewName").innerHTML = `নাম: ${name}`;
+    document.getElementById("previewLandFormatted").innerHTML = `জমি: ${landFormat.formatted} (${currentUnit}: ${rawQty})`;
+    document.getElementById("liveTotalAmount").innerHTML = `৳ ${totalAmount.toLocaleString()}`;
+    document.getElementById("liveCashAmount").innerHTML = `৳ ${cash.toLocaleString()}`;
+    document.getElementById("liveDueAmount").innerHTML = `৳ ${due.toLocaleString()}`;
+    document.getElementById("liveUnitInfo").innerHTML = `একক: ${currentUnit}`;
+  }
+
+  async function saveCurrentEntry() {
+    const name = document.getElementById("customerName").value.trim();
+    let rawQuantity = parseFloat(document.getElementById("quantityInput").value);
+    const rate = parseFloat(document.getElementById("rateInput").value);
+    const cashPaid = parseFloat(document.getElementById("cashPaidInput").value) || 0;
+    const comment = document.getElementById("commentInput").value;
+    let date = document.getElementById("entryDateInput").value;
+    if (!name || isNaN(rawQuantity) || isNaN(rate) || rawQuantity <= 0 || rate <= 0) { alert("নাম, পরিমাণ ও রেট সঠিক দিন"); return; }
+    if (!date) date = new Date().toISOString().slice(0,10);
+    const totalAmount = rawQuantity * rate;
+    const due = totalAmount - cashPaid;
+    const record = { name, landType: currentUnit, quantity: rawQuantity, rate, totalAmount, cashPaid, due, comment, date };
+    await saveRecord(record);
+    gsap.to("#saveEntryBtn", { scale: 0.95, duration: 0.1, yoyo: true, repeat: 1 });
+    document.getElementById("customerName").value = "";
+    document.getElementById("quantityInput").value = "";
+    document.getElementById("rateInput").value = "";
+    document.getElementById("cashPaidInput").value = "";
+    document.getElementById("commentInput").value = "";
+    await refreshAllUI();
+    updateLivePreviewUI();
+  }
+
+  // Dashboard dynamic: today stats in kan/katha/gonda
   async function refreshAllUI() {
     const records = await getAllRecords();
     const today = new Date().toISOString().slice(0,10);
-    let todaySales = 0, todayCash = 0, todayDue = 0, todayLandKani = 0;
+    let todaySales = 0, todayCash = 0, todayDue = 0, todayTotalGonda = 0;
     let totalSalesAll = 0, totalDueAll = 0, totalCollectedAll = 0;
-    for(let rec of records) {
-      const total = rec.totalAmount || (rec.quantity * rec.rate);
-      const cash = rec.cashPaid || 0;
+    for (let r of records) {
+      const total = r.totalAmount || (r.quantity * r.rate);
+      const cash = r.cashPaid || 0;
       const due = total - cash;
       totalSalesAll += total;
       totalCollectedAll += cash;
       totalDueAll += due;
-      if(rec.date === today) {
+      if (r.date === today) {
         todaySales += total;
         todayCash += cash;
         todayDue += due;
-        let landKani = toKani(rec.quantity, rec.landType);
-        todayLandKani += landKani;
+        let gondaVal = toGonda(r.quantity, r.landType);
+        todayTotalGonda += gondaVal;
       }
     }
     document.getElementById("todaySales").innerHTML = `৳ ${todaySales.toLocaleString()}`;
     document.getElementById("todayCash").innerHTML = `৳ ${todayCash.toLocaleString()}`;
     document.getElementById("todayDue").innerHTML = `৳ ${todayDue.toLocaleString()}`;
-    document.getElementById("todayLand").innerHTML = `${todayLandKani.toFixed(2)} কানি`;
+    const landReadable = formatLandFromGonda(todayTotalGonda);
+    document.getElementById("todayLandReadable").innerHTML = landReadable.formatted || "০ গন্ডা";
+    document.getElementById("todayLandGonda").innerHTML = `(${landReadable.totalGonda} গন্ডা)`;
     document.getElementById("totalSalesAll").innerHTML = `৳ ${totalSalesAll.toLocaleString()}`;
     document.getElementById("totalDueAll").innerHTML = `৳ ${totalDueAll.toLocaleString()}`;
     document.getElementById("totalCollectedAll").innerHTML = `৳ ${totalCollectedAll.toLocaleString()}`;
-    // refresh customer list and charts
-    await renderCustomersList();
+
+    await renderCustomersList(records);
     updateAnalyticsCharts(records);
   }
 
-  let showOnlyDue = false;
-  async function renderCustomersList() {
-    let records = await getAllRecords();
-    if(showOnlyDue) {
-      records = records.filter(r => (r.totalAmount - (r.cashPaid||0)) > 0);
-      document.getElementById("filterStatus").innerText = "শুধু বাকি গ্রাহক";
-    } else {
-      document.getElementById("filterStatus").innerText = "সব গ্রাহক";
-    }
+  async function renderCustomersList(records = null) {
+    if (!records) records = await getAllRecords();
+    let filtered = showOnlyDue ? records.filter(r => (r.totalAmount - (r.cashPaid||0)) > 0) : [...records];
     const container = document.getElementById("customersListContainer");
-    if(!container) return;
     container.innerHTML = "";
-    for(let rec of records) {
+    for (let rec of filtered) {
       const total = rec.totalAmount;
       const paid = rec.cashPaid || 0;
       const due = total - paid;
+      const gondaVal = toGonda(rec.quantity, rec.landType);
+      const landHuman = formatLandFromGonda(gondaVal).formatted;
       const card = document.createElement("div");
-      card.className = "customer-card p-3 rounded-2xl cursor-pointer";
+      card.className = "customer-card-premium p-4 cursor-pointer";
       card.innerHTML = `
         <div class="flex justify-between items-start">
-          <div><span class="font-bold text-cyan-200">${rec.name}</span><div class="text-xs text-gray-300">${rec.landType} ${rec.quantity} (${rec.date})</div></div>
-          <div class="text-right"><div class="text-sm">মোট: ৳${total.toLocaleString()}</div><div class="text-xs text-green-300">নগদ: ৳${paid.toLocaleString()}</div><div class="text-xs text-rose-300">বাকি: ৳${due.toLocaleString()}</div></div>
+          <div><div class="font-bold text-cyan-200 text-base">${rec.name}</div><div class="text-xs text-gray-300">জমি: ${landHuman}</div><div class="text-[10px] text-gray-400">${rec.date}</div></div>
+          <div class="text-right"><div class="text-sm font-semibold">মোট: ৳${total.toLocaleString()}</div><div class="text-xs text-green-300">নগদ: ৳${paid.toLocaleString()}</div><div class="text-xs text-rose-300">বাকি: ৳${due.toLocaleString()}</div></div>
         </div>
       `;
       card.addEventListener("click", () => showCustomerDetails(rec));
@@ -319,180 +378,76 @@
   }
 
   function showCustomerDetails(rec) {
-    document.getElementById("modalName").innerText = rec.name;
-    document.getElementById("modalLandType").innerText = `${rec.landType} ${rec.quantity}`;
-    const total = rec.totalAmount;
-    const paid = rec.cashPaid||0;
+    const total = rec.totalAmount; const paid = rec.cashPaid||0; const due = total - paid;
+    const gondaVal = toGonda(rec.quantity, rec.landType);
+    const landDisplay = formatLandFromGonda(gondaVal).formatted;
+    document.getElementById("modalName").innerHTML = rec.name;
+    document.getElementById("modalLandDisplay").innerHTML = `${landDisplay} (${rec.landType}: ${rec.quantity})`;
     document.getElementById("modalTotal").innerHTML = `৳ ${total.toLocaleString()}`;
     document.getElementById("modalCash").innerHTML = `৳ ${paid.toLocaleString()}`;
-    document.getElementById("modalDue").innerHTML = `৳ ${(total-paid).toLocaleString()}`;
-    document.getElementById("modalComment").innerText = rec.comment || "—";
-    document.getElementById("modalDate").innerText = rec.date;
+    document.getElementById("modalDue").innerHTML = `৳ ${due.toLocaleString()}`;
+    document.getElementById("modalComment").innerHTML = rec.comment || "—";
+    document.getElementById("modalDate").innerHTML = rec.date;
     document.getElementById("customerModal").classList.remove("hidden");
   }
 
-  // live calculation
-  function updateLivePreview() {
-    const qty = parseFloat(document.getElementById("quantity").value) || 0;
-    const rate = parseFloat(document.getElementById("rate").value) || 0;
-    const cash = parseFloat(document.getElementById("cashPaid").value) || 0;
-    const total = qty * rate;
-    const due = total - cash;
-    document.getElementById("liveTotal").innerHTML = `৳ ${total.toLocaleString()}`;
-    document.getElementById("liveCashPreview").innerHTML = `৳ ${cash.toLocaleString()}`;
-    document.getElementById("liveDuePreview").innerHTML = `৳ ${due.toLocaleString()}`;
-    if(total>0) gsap.to("#liveTotal", {duration:0.2, scale:1.05, yoyo:true, repeat:1});
-  }
-
-  async function saveEntry() {
-    const name = document.getElementById("customerName").value.trim();
-    const landType = document.getElementById("landType").value;
-    const quantity = parseFloat(document.getElementById("quantity").value);
-    const rate = parseFloat(document.getElementById("rate").value);
-    const cashPaid = parseFloat(document.getElementById("cashPaid").value) || 0;
-    const comment = document.getElementById("comment").value.trim();
-    let date = document.getElementById("entryDate").value;
-    if(!name || isNaN(quantity) || isNaN(rate) || quantity<=0 || rate<=0) {
-      alert("দয়া করে নাম, পরিমাণ ও রেট সঠিকভাবে দিন");
-      return;
-    }
-    if(!date) date = new Date().toISOString().slice(0,10);
-    const totalAmount = quantity * rate;
-    const due = totalAmount - cashPaid;
-    const record = { name, landType, quantity, rate, totalAmount, cashPaid, due, comment, date };
-    await saveRecord(record);
-    gsap.fromTo("#saveEntryBtn", {scale:0.95}, {scale:1, duration:0.2});
-    document.getElementById("customerName").value = "";
-    document.getElementById("quantity").value = "";
-    document.getElementById("rate").value = "";
-    document.getElementById("cashPaid").value = "";
-    document.getElementById("comment").value = "";
-    document.getElementById("entryDate").value = date;
-    await refreshAllUI();
-  }
-
-  // Analytics charts from real data
+  // Charts using real data
   async function updateAnalyticsCharts(records) {
-    const last7Days = [...Array(7)].map((_,i) => {
-      let d = new Date(); d.setDate(d.getDate()-i); return d.toISOString().slice(0,10);
-    }).reverse();
-    const dailySales = last7Days.map(day => records.filter(r=>r.date===day).reduce((sum,r)=>sum+(r.totalAmount||0),0));
+    const last7Days = [...Array(7)].map((_,i) => { let d = new Date(); d.setDate(d.getDate()-i); return d.toISOString().slice(0,10); }).reverse();
+    const dailySales = last7Days.map(day => records.filter(r=>r.date===day).reduce((s,r)=>s+(r.totalAmount||0),0));
     const totalPaidAll = records.reduce((s,r)=>s+(r.cashPaid||0),0);
     const totalDueAll = records.reduce((s,r)=>s+(r.totalAmount-(r.cashPaid||0)),0);
-    const landData = {গন্ডা:0, কাঠা:0, কানি:0};
-    records.forEach(r=>{ landData[r.landType] += (r.quantity || 0); });
-    
-    if(chartDaily) chartDaily.destroy();
-    if(chartDuePaid) chartDuePaid.destroy();
-    if(chartLandDist) chartLandDist.destroy();
-
-    const ctx1 = document.getElementById("dailyTrendChart").getContext("2d");
-    chartDaily = new Chart(ctx1, { type: 'line', data: { labels: last7Days.map(d=>d.slice(5)), datasets: [{ label: 'দৈনিক বিক্রি (৳)', data: dailySales, borderColor: '#0ff', backgroundColor: 'rgba(0,255,255,0.1)', tension:0.3, fill:true }] }, options: { responsive: true, maintainAspectRatio: true } });
-    const ctx2 = document.getElementById("dueVsPaidChart").getContext("2d");
-    chartDuePaid = new Chart(ctx2, { type: 'doughnut', data: { labels: ['নগদ সংগ্রহ', 'বাকি'], datasets: [{ data: [totalPaidAll, totalDueAll], backgroundColor: ['#00b894', '#ff7675'] }] }, options: { responsive: true } });
-    const ctx3 = document.getElementById("landDistributionChart").getContext("2d");
-    chartLandDist = new Chart(ctx3, { type: 'bar', data: { labels: ['গন্ডা', 'কাঠা', 'কানি'], datasets: [{ label: 'জমির পরিমাণ (একক)', data: [landData.গন্ডা, landData.কাঠা, landData.কানি], backgroundColor: 'cyan' }] }, options: { responsive: true } });
+    let landByUnit = { গন্ডা:0, কাঠা:0, কানি:0 };
+    records.forEach(r => { landByUnit[r.landType] += (r.quantity || 0); });
+    if (charts.daily) charts.daily.destroy();
+    if (charts.duePaid) charts.duePaid.destroy();
+    if (charts.landDist) charts.landDist.destroy();
+    charts.daily = new Chart(document.getElementById("dailyTrendChart"), { type: 'line', data: { labels: last7Days.map(d=>d.slice(5)), datasets: [{ label: 'বিক্রি (৳)', data: dailySales, borderColor: '#0ff', backgroundColor: 'rgba(0,255,255,0.1)', tension: 0.3, fill: true }] }, options: { responsive: true, maintainAspectRatio: true } });
+    charts.duePaid = new Chart(document.getElementById("dueVsPaidChart"), { type: 'doughnut', data: { labels: ['নগদ সংগ্রহ', 'বাকি'], datasets: [{ data: [totalPaidAll, totalDueAll], backgroundColor: ['#00e676', '#ff5252'] }] }, options: { responsive: true } });
+    charts.landDist = new Chart(document.getElementById("landDistributionChart"), { type: 'bar', data: { labels: ['গন্ডা', 'কাঠা', 'কানি'], datasets: [{ label: 'পরিমাণ (একক)', data: [landByUnit.গন্ডা, landByUnit.কাঠা, landByUnit.কানি], backgroundColor: '#0ff' }] }, options: { responsive: true } });
   }
 
-  // EXPORT EXCEL (XLSX)
-  async function exportToExcel() {
+  // Exports
+  async function exportExcel() {
     const records = await getAllRecords();
-    const wsData = [["নাম", "জমির ধরন", "পরিমাণ", "রেট", "মোট", "নগদ", "বাকি", "তারিখ", "মন্তব্য"]];
-    for(let r of records) {
-      wsData.push([r.name, r.landType, r.quantity, r.rate, r.totalAmount, r.cashPaid||0, (r.totalAmount-(r.cashPaid||0)), r.date, r.comment||""]);
-    }
+    const wsData = [["নাম","জমির ধরন","পরিমাণ","রেট","মোট","নগদ","বাকি","তারিখ","মন্তব্য"]];
+    for(let r of records) wsData.push([r.name, r.landType, r.quantity, r.rate, r.totalAmount, r.cashPaid||0, (r.totalAmount-(r.cashPaid||0)), r.date, r.comment||""]);
     const ws = XLSX.utils.aoa_to_sheet(wsData);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "রিপোর্ট");
-    XLSX.writeFile(wb, `হারভেস্টার_রিপোর্ট_${new Date().toISOString().slice(0,10)}.xlsx`);
+    const wb = XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb, ws, "রিপোর্ট"); XLSX.writeFile(wb, `হারভেস্টার_প্রো_${new Date().toISOString().slice(0,10)}.xlsx`);
   }
-
-  // JPG Export using html-to-image (capture report style div)
   async function exportJPG() {
     const records = await getAllRecords();
-    let totalSales = records.reduce((s,r)=>s+r.totalAmount,0);
-    let totalCash = records.reduce((s,r)=>s+(r.cashPaid||0),0);
-    let totalDue = totalSales - totalCash;
-    const tempDiv = document.createElement("div");
-    tempDiv.style.width = "400px";
-    tempDiv.style.padding = "20px";
-    tempDiv.style.background = "#0a1015";
-    tempDiv.style.color = "white";
-    tempDiv.style.fontFamily = "'Noto Sans Bengali', sans-serif";
-    tempDiv.innerHTML = `<div style="border:1px solid cyan; padding:16px; border-radius:24px;"><h2 style="color:cyan;">HARVESTER PRO — রফিক এন্টারপ্রাইজ</h2><hr/><p>মোট বিক্রি: ৳${totalSales.toLocaleString()}</p><p>মোট নগদ: ৳${totalCash.toLocaleString()}</p><p>মোট বাকি: ৳${totalDue.toLocaleString()}</p><p>মোট লেনদেন: ${records.length}</p><small>তারিখ: ${new Date().toLocaleString()}</small></div>`;
-    document.body.appendChild(tempDiv);
-    const dataUrl = await htmlToImage.toJpeg(tempDiv, { quality: 0.95 });
-    const link = document.createElement('a');
-    link.download = 'হারভেস্টার_প্রো_রিপোর্ট.jpg';
-    link.href = dataUrl;
-    link.click();
-    document.body.removeChild(tempDiv);
+    let totalSales = records.reduce((s,r)=>s+r.totalAmount,0), totalCash = records.reduce((s,r)=>s+(r.cashPaid||0),0), totalDue = totalSales - totalCash;
+    const div = document.createElement("div"); div.style.width="420px"; div.style.padding="24px"; div.style.background="white"; div.style.color="black"; div.style.fontFamily="'Noto Sans Bengali'";
+    div.innerHTML = `<div style="border-bottom:2px solid #00c6ff"><h2 style="color:#0b3954">HARVESTER PRO — রফিক এন্টারপ্রাইজ</h2><p>স্টেটমেন্ট</p></div><div style="margin-top:16px"><p>মোট বিক্রি: ৳${totalSales.toLocaleString()}</p><p>মোট নগদ: ৳${totalCash.toLocaleString()}</p><p>মোট বাকি: ৳${totalDue.toLocaleString()}</p><p>লেনদেন: ${records.length}</p><small>তারিখ: ${new Date().toLocaleString()}</small></div>`;
+    document.body.appendChild(div); const url = await htmlToImage.toJpeg(div, { quality: 0.95 }); const a = document.createElement('a'); a.download = 'হরভেস্টার_স্টেটমেন্ট.jpg'; a.href = url; a.click(); document.body.removeChild(div);
   }
-
   async function exportPDF() {
     const { jsPDF } = window.jspdf;
     const records = await getAllRecords();
-    let totalSales = records.reduce((s,r)=>s+r.totalAmount,0);
-    let totalCash = records.reduce((s,r)=>s+(r.cashPaid||0),0);
-    let totalDue = totalSales - totalCash;
-    let totalLandKani = records.reduce((s,r)=>s+toKani(r.quantity, r.landType),0);
+    let totalSales = records.reduce((s,r)=>s+r.totalAmount,0), totalCash = records.reduce((s,r)=>s+(r.cashPaid||0),0), totalDue = totalSales - totalCash;
+    let totalGondaAll = records.reduce((s,r)=>s+toGonda(r.quantity, r.landType),0);
+    let landSummary = formatLandFromGonda(totalGondaAll).formatted;
     const doc = new jsPDF();
-    doc.setFont("helvetica");
-    doc.text("HARVESTER PRO — রফিক এন্টারপ্রাইজ", 14, 20);
-    doc.text(`মোট বিক্রি: ৳${totalSales.toLocaleString()}`, 14, 35);
-    doc.text(`মোট নগদ: ৳${totalCash.toLocaleString()}`, 14, 45);
-    doc.text(`মোট বাকি: ৳${totalDue.toLocaleString()}`, 14, 55);
-    doc.text(`মোট জমি (কানি): ${totalLandKani.toFixed(2)}`, 14, 65);
-    doc.text(`সৃষ্টির তারিখ: ${new Date().toLocaleString()}`, 14, 80);
-    let y = 100;
-    doc.text("লেনদেন সংক্ষেপ:", 14, y); y+=8;
-    for(let i=0; i<Math.min(records.length, 20); i++){
-      let r = records[i];
-      doc.text(`${r.name} - ${r.landType} ${r.quantity} - মোট ৳${r.totalAmount} - নগদ ৳${r.cashPaid||0}`, 14, y);
-      y+=6;
-      if(y>270) break;
-    }
-    doc.save(`হারভেস্টার_প্রো_${new Date().toISOString().slice(0,10)}.pdf`);
+    doc.setFont("helvetica"); doc.text("HARVESTER PRO — রফিক এন্টারপ্রাইজ", 14, 20); doc.text(`মোট বিক্রি: ৳${totalSales.toLocaleString()}`, 14, 35); doc.text(`মোট নগদ: ৳${totalCash.toLocaleString()}`, 14, 45); doc.text(`মোট বাকি: ৳${totalDue.toLocaleString()}`, 14, 55); doc.text(`মোট জমি: ${landSummary}`, 14, 65); doc.text(`তারিখ: ${new Date().toLocaleString()}`, 14, 80); doc.text("স্বাক্ষর _________________", 14, 270); doc.save(`হরভেস্টার_প্রো_রিপোর্ট.pdf`);
   }
 
-  // Tab switching
-  const tabs = document.querySelectorAll(".tab-btn");
-  const contents = {
-    entry: document.getElementById("entryTab"),
-    customers: document.getElementById("customersTab"),
-    reports: document.getElementById("reportsTab"),
-    analytics: document.getElementById("analyticsTab")
-  };
-  function switchTab(tabId){
-    Object.keys(contents).forEach(k => contents[k].classList.add("hidden"));
-    contents[tabId].classList.remove("hidden");
-    tabs.forEach(btn => {
-      if(btn.dataset.tab === tabId) btn.classList.add("bg-cyan-600", "text-white");
-      else btn.classList.remove("bg-cyan-600", "text-white");
-    });
-    if(tabId === "customers") renderCustomersList();
-    if(tabId === "analytics") refreshAllUI();
-  }
-  tabs.forEach(btn => btn.addEventListener("click", ()=>switchTab(btn.dataset.tab)));
-
-  // initialization
+  // Event binding and initialization
   window.addEventListener("load", async () => {
     await openDB();
     await refreshAllUI();
-    document.getElementById("entryDate").value = new Date().toISOString().slice(0,10);
-    document.getElementById("quantity").addEventListener("input", updateLivePreview);
-    document.getElementById("rate").addEventListener("input", updateLivePreview);
-    document.getElementById("cashPaid").addEventListener("input", updateLivePreview);
-    document.getElementById("saveEntryBtn").addEventListener("click", saveEntry);
-    document.getElementById("exportExcelBtn").addEventListener("click", exportToExcel);
+    document.getElementById("entryDateInput").value = new Date().toISOString().slice(0,10);
+    document.getElementById("saveEntryBtn").addEventListener("click", saveCurrentEntry);
+    document.getElementById("exportExcelBtn").addEventListener("click", exportExcel);
     document.getElementById("exportJpgBtn").addEventListener("click", exportJPG);
     document.getElementById("exportPdfBtn").addEventListener("click", exportPDF);
     document.getElementById("bakiToggleBtn").addEventListener("click", () => { showOnlyDue = !showOnlyDue; renderCustomersList(); });
     document.getElementById("closeModalBtn").addEventListener("click", () => document.getElementById("customerModal").classList.add("hidden"));
-    updateLivePreview();
-    switchTab("entry");
-  });
-
-</script>
-</body>
-</html>
+    document.querySelectorAll(".unit-btn").forEach(btn => { btn.addEventListener("click", (e) => { document.querySelectorAll(".unit-btn").forEach(b => b.classList.remove("unit-btn-active", "bg-gradient-to-r", "from-cyan-500", "to-blue-500", "text-white")); btn.classList.add("unit-btn-active", "bg-gradient-to-r", "from-cyan-500", "to-blue-500", "text-white"); currentUnit = btn.dataset.unit; updateLivePreviewUI(); }); });
+    document.querySelector(".unit-btn").classList.add("unit-btn-active", "bg-gradient-to-r", "from-cyan-500", "to-blue-500", "text-white");
+    document.getElementById("customerName").addEventListener("input", updateLivePreviewUI); document.getElementById("quantityInput").addEventListener("input", updateLivePreviewUI); document.getElementById("rateInput").addEventListener("input", updateLivePreviewUI); document.getElementById("cashPaidInput").addEventListener("input", updateLivePreviewUI);
+    updateLivePreviewUI();
+    const tabs = document.querySelectorAll(".tab-btn");
+    const contentsMap = { entry: document.getElementById("entryTab"), customers: document.getElementById("customersTab"), reports: document.getElementById("reportsTab"), analytics: document.getElementById("analyticsTab") };
+    function switchTab(tabId){ Object.values(contentsMap).forEach(v=>v.classList.add("hidden")); contentsMap[tabId].classList.remove("hidden"); tabs.forEach(btn=>{ if(btn.dataset.tab===tabId) btn.classList.add("bg-cyan-600","text-white"); else btn.classList.remove("bg-cyan-600","text-white"); }); if(tabId==="customers") renderCustomersList(); if(tabId==="analytics") refreshAllUI(); }
+    tabs.forEach(btn=>btn.addEventListener("click",()=>switchTab(btn.dataset
